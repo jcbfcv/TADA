@@ -6,7 +6,6 @@
 <title>FCV Service Master</title>
 
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -90,6 +89,7 @@ padding-top:10px;
 border-top:1px solid #ddd;
 font-weight:bold;
 }
+
 .selfie-box{
 background:#fff;
 padding:15px;
@@ -150,20 +150,75 @@ font-weight:bold;
 cursor:pointer;
 }
 
-</style>
+/* --- CUSTOM POPUP MODAL STYLES --- */
+.modal-overlay {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.5);
+backdrop-filter: blur(3px);
+z-index: 9999;
+justify-content: center;
+align-items: center;
+}
 
+.modal-content {
+background: #fff;
+padding: 25px;
+border-radius: 12px;
+width: 85%;
+max-width: 360px;
+text-align: center;
+box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+animation: scaleUp 0.3s ease-out;
+}
+
+.modal-content h4 {
+color: #28a745;
+font-size: 20px;
+margin-bottom: 10px;
+}
+
+.modal-content p {
+color: #555;
+font-size: 15px;
+margin-bottom: 20px;
+line-height: 1.4;
+}
+
+.modal-close-btn {
+background: #000;
+color: #fff;
+border: none;
+padding: 10px 30px;
+border-radius: 8px;
+font-size: 15px;
+font-weight: bold;
+cursor: pointer;
+width: 100%;
+}
+
+.modal-close-btn:hover {
+background: #222;
+}
+
+@keyframes scaleUp {
+from { transform: scale(0.9); opacity: 0; }
+to { transform: scale(1); opacity: 1; }
+}
+</style>
+<!-- Supabase Library Exposed Globally -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
 <div class="header">
-
 <h2>FCV Service Master</h2>
-
-<button class="logout" onclick="logout()">
-Logout
-</button>
-
+<button class="logout" onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
@@ -172,62 +227,56 @@ Logout
 <h2>Welcome, <span id="engineerName"></span></h2>
 </div>
 
+<!-- Green User Status / Alert Tracker Box -->
+<div id="statusTrackerBox" style="background: #e8f5e9; border: 2px solid #28a745; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,.05);">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 20px;">🟢</span>
+        <div>
+            <h4 id="statusTitle" style="color: #2e7d32; font-size: 16px; margin-bottom: 3px; font-weight: bold;">Status: Active</h4>
+            <p id="statusMessage" style="color: #555; font-size: 14px; margin-bottom: 5px;">Ready for attendance check-in.</p>
+            <p style="color: #444; font-size: 13px; margin: 0; font-weight: bold;">📊 Daily Submissions: <span id="dailyCountText" style="color: #000;">Loading...</span></p>
+        </div>
+    </div>
+</div>
+
 <div class="card">
-
 <h3>Assigned Deputations</h3>
-
 <div class="row">
-
 <div class="col">
-
-<p><b>Workshop:</b> On Site</p>
-
-<p><b>Call Type:</b> U/W</p>
-
-<p><b>Primary/Secondary:</b> Primary Engineer</p>
-
+<p><b>Workshop:</b> <span id="workshop">On Site</span></p>
+<p><b>Call Type:</b> <span id="callType">U/W</span></p>
+<p><b>Primary/Secondary:</b> <span id="engineerType">Primary Engineer</span></p>
 </div>
-
 <div class="col">
-
-<p><b>Customer:</b> Demo Customer</p>
-
-<p><b>Mobile:</b> 9876543210</p>
-
-<p><b>Machine No:</b> 3609279</p>
-
+<p><b>Customer:</b> <span id="customer">Demo Customer</span></p>
+<p><b>Mobile:</b> <span id="mobile">9876543210</span></p>
+<p><b>Machine No:</b> <span id="machine">3609279</span></p>
 </div>
-
 </div>
-
 <div class="complaint">
-
-Complaint : Diesel Gauge Problem
-
+Complaint : <span id="complaint">Diesel Gauge Problem</span>
 </div>
-
 </div>
 
 <div class="selfie-box">
-
 <h3>Selfie Verification</h3>
-
 <video id="camera" autoplay playsinline></video>
-
 <canvas id="canvas" style="display:none;"></canvas>
+<img id="photo" alt="Captured Selfie">
+<button id="captureBtn">📷 Capture Photo</button>
+</div>
 
-<img id="photo">
-
-<button id="captureBtn">
-📷 Capture Selfie
-</button>
+<button class="historyBtn" onclick="openHistory()">Attendance History</button>
 
 </div>
 
-<button class="historyBtn" onclick="openHistory()">
-Attendance History
-</button>
-
+<!-- Custom Popup Component -->
+<div id="customAlertModal" class="modal-overlay">
+<div class="modal-content">
+<h4 id="modalTitle">Success!</h4>
+<p id="modalMessage">Your selfie and location coordinates have been submitted successfully.</p>
+<button id="modalCloseBtn" class="modal-close-btn">OK</button>
+</div>
 </div>
 
 <script src="dashboard.js"></script>
