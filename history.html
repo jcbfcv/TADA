@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Attendance History</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+}
+
+.header{
+background:#000;
+color:#fff;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.backBtn{
+background:#FFC107;
+color:#000;
+border:none;
+padding:10px 18px;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.container{
+padding:15px;
+}
+
+.card{
+background:#fff;
+padding:15px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+margin-bottom:15px;
+}
+
+.card h3{
+color:#f4b400;
+margin-bottom:15px;
+}
+
+label{
+display:block;
+margin-top:12px;
+font-weight:bold;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:6px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+.searchBtn{
+width:100%;
+padding:14px;
+margin-top:18px;
+background:#2196F3;
+color:#fff;
+border:none;
+border-radius:8px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.historyCard{
+
+background:#fff;
+
+padding:15px;
+
+border-radius:12px;
+
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+
+margin-top:15px;
+
+}
+
+.historyCard p{
+
+margin:10px 0;
+
+font-size:15px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h2>Attendance History</h2>
+
+<button class="backBtn" onclick="goBack()">
+
+Back
+
+</button>
+
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h3>Search Attendance</h3>
+
+<label>From Date</label>
+
+<input type="date" id="fromDate">
+
+<label>To Date</label>
+
+<input type="date" id="toDate">
+
+<button class="searchBtn"
+
+onclick="searchAttendance()">
+
+Search
+
+</button>
+
+</div>
+<div class="historyCard">
+
+<h3>Attendance Details</h3>
+
+<p><b>Engineer :</b> <span id="eng">-</span></p>
+
+<p><b>Date :</b> <span id="date">-</span></p>
+
+<p><b>Selfie Submitted :</b> <span id="submitTime">-</span></p>
+
+<p><b>Workshop :</b> <span id="workshop">On Site</span></p>
+
+<p><b>Customer :</b> <span id="customer">Demo Customer</span></p>
+
+<p><b>Machine No :</b> <span id="machine">3609279</span></p>
+
+<p><b>Complaint :</b> <span id="complaint">Diesel Gauge Problem</span></p>
+
+</div>
+
+</div>
+
+<script src="history.js"></script>
+
+</body>
+</html>

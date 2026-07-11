@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FCV Service Master</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+}
+
+.header{
+background:#000;
+color:#fff;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.header h2{
+font-size:22px;
+}
+
+.logout{
+background:#d32f2f;
+color:#fff;
+padding:10px 20px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.container{
+padding:15px;
+}
+
+.welcome{
+background:#fff;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+margin-bottom:15px;
+}
+
+.welcome h2{
+font-size:20px;
+}
+
+.card{
+background:#fff;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+margin-bottom:15px;
+}
+
+.card h3{
+color:#f4b400;
+margin-bottom:15px;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+gap:20px;
+}
+
+.col{
+flex:1;
+}
+
+.col p{
+margin:10px 0;
+font-size:15px;
+}
+
+.complaint{
+margin-top:15px;
+padding-top:10px;
+border-top:1px solid #ddd;
+font-weight:bold;
+}
+.selfie-box{
+background:#fff;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+margin-bottom:15px;
+}
+
+.selfie-box h3{
+color:#f4b400;
+margin-bottom:15px;
+}
+
+#camera{
+width:100%;
+height:260px;
+background:#000;
+border-radius:10px;
+object-fit:cover;
+}
+
+#photo{
+display:none;
+width:100%;
+height:260px;
+border-radius:10px;
+object-fit:cover;
+margin-top:10px;
+}
+
+#captureBtn{
+width:100%;
+padding:14px;
+margin-top:15px;
+background:#2196F3;
+color:white;
+border:none;
+border-radius:10px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+#captureBtn:hover{
+background:#1976D2;
+}
+
+.historyBtn{
+width:100%;
+padding:15px;
+margin-top:15px;
+background:#FFC107;
+border:none;
+border-radius:10px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h2>FCV Service Master</h2>
+
+<button class="logout" onclick="logout()">
+Logout
+</button>
+
+</div>
+
+<div class="container">
+
+<div class="welcome">
+<h2>Welcome, <span id="engineerName"></span></h2>
+</div>
+
+<div class="card">
+
+<h3>Assigned Deputations</h3>
+
+<div class="row">
+
+<div class="col">
+
+<p><b>Workshop:</b> On Site</p>
+
+<p><b>Call Type:</b> U/W</p>
+
+<p><b>Primary/Secondary:</b> Primary Engineer</p>
+
+</div>
+
+<div class="col">
+
+<p><b>Customer:</b> Demo Customer</p>
+
+<p><b>Mobile:</b> 9876543210</p>
+
+<p><b>Machine No:</b> 3609279</p>
+
+</div>
+
+</div>
+
+<div class="complaint">
+
+Complaint : Diesel Gauge Problem
+
+</div>
+
+</div>
+
+<div class="selfie-box">
+
+<h3>Selfie Verification</h3>
+
+<video id="camera" autoplay playsinline></video>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<img id="photo">
+
+<button id="captureBtn">
+📷 Capture Selfie
+</button>
+
+</div>
+
+<button class="historyBtn" onclick="openHistory()">
+Attendance History
+</button>
+
+</div>
+
+<script src="dashboard.js"></script>
+
+</body>
+</html>
