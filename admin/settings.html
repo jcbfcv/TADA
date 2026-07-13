@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Settings | FCV Admin</title>
+
+<link rel="stylesheet" href="settings.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+
+<body>
+
+
+<div class="sidebar">
+
+
+<div class="logo-section">
+
+<img src="../logo.png">
+
+<h2>FCV Admin</h2>
+
+</div>
+
+
+
+<ul>
+
+
+<li onclick="window.location.href='admin-dashboard.html'">
+
+<i class="fa-solid fa-house"></i>
+
+<span>Dashboard</span>
+
+</li>
+
+
+
+<li onclick="window.location.href='engineers.html'">
+
+<i class="fa-solid fa-users"></i>
+
+<span>Engineers</span>
+
+</li>
+
+
+
+<li onclick="window.location.href='attendance.html'">
+
+<i class="fa-solid fa-calendar-check"></i>
+
+<span>Attendance</span>
+
+</li>
+
+
+
+<li onclick="window.location.href='gallery.html'">
+
+<i class="fa-solid fa-image"></i>
+
+<span>Gallery</span>
+
+</li>
+
+
+
+<li onclick="window.location.href='reports.html'">
+
+<i class="fa-solid fa-chart-line"></i>
+
+<span>Reports</span>
+
+</li>
+
+
+
+<li class="active">
+
+<i class="fa-solid fa-gear"></i>
+
+<span>Settings</span>
+
+</li>
+
+
+
+<li onclick="logoutAdmin()">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+<span>Logout</span>
+
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+
+
+<div class="main-content">
+
+
+<div class="topbar">
+
+
+<h1>Settings</h1>
+
+
+
+<div class="admin-profile">
+
+<i class="fa-solid fa-circle-user"></i>
+
+<span>Admin</span>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="settings-container">
+
+
+
+<div class="setting-card">
+
+
+<i class="fa-solid fa-user"></i>
+
+<h2>Admin Profile</h2>
+
+
+<label>
+Admin Name
+</label>
+
+<input type="text" id="adminName"
+value="Admin">
+
+
+
+<label>
+Mobile Number
+</label>
+
+<input type="text"
+value="XXXXXXXXXX"
+disabled>
+
+
+
+<button onclick="saveProfile()">
+Save Profile
+</button>
+
+
+</div>
+
+
+
+
+
+
+<div class="setting-card">
+
+
+<i class="fa-solid fa-lock"></i>
+
+<h2>Change Password</h2>
+
+
+<label>
+Old Password
+</label>
+
+<input type="password"
+id="oldPassword">
+
+
+
+<label>
+New Password
+</label>
+
+<input type="password"
+id="newPassword">
+
+
+
+<button onclick="changePassword()">
+Update Password
+</button>
+
+
+</div>
+
+
+
+
+
+
+<div class="setting-card">
+
+
+<i class="fa-solid fa-circle-info"></i>
+
+<h2>App Information</h2>
+
+
+<p>
+FCV Service Master
+</p>
+
+<p>
+Version : 1.0
+</p>
+
+<p>
+© 2026 FCV
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div class="footer">
+
+© 2026 FCV Service Master | Settings
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<script src="settings.js"></script>
+
+
+</body>
+
+</html>

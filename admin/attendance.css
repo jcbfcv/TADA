@@ -1,0 +1,359 @@
+/* ===========================
+   FCV Attendance CSS
+   Part 1
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    display:flex;
+    color:#333;
+}
+
+/* Sidebar */
+
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:#111827;
+    position:fixed;
+    left:0;
+    top:0;
+    overflow-y:auto;
+}
+
+.logo-section{
+    text-align:center;
+    padding:25px 15px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.logo-section img{
+    width:75px;
+    margin-bottom:10px;
+}
+
+.logo-section h2{
+    color:#FFC107;
+    font-size:24px;
+}
+
+.sidebar ul{
+    list-style:none;
+    margin-top:20px;
+}
+
+.sidebar ul li{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 20px;
+    color:#fff;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.sidebar ul li i{
+    width:22px;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active{
+    background:#FFC107;
+    color:#000;
+    font-weight:bold;
+}
+
+/* Main Content */
+
+.main-content{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    padding:25px;
+}
+
+/* Topbar */
+
+.topbar{
+    background:#fff;
+    padding:20px 25px;
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.topbar h1{
+    font-size:28px;
+    color:#111827;
+}
+
+.admin-profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:bold;
+}
+
+.admin-profile i{
+    font-size:32px;
+    color:#FFC107;
+}
+/* ===========================
+   Filter Box
+=========================== */
+
+.filter-box{
+    margin-top:25px;
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+    display:flex;
+    gap:15px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.filter-box input,
+.filter-box select{
+
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    outline:none;
+    font-size:15px;
+    min-width:180px;
+    flex:1;
+}
+
+.filter-box input:focus,
+.filter-box select:focus{
+
+    border-color:#FFC107;
+}
+
+.filter-box button{
+
+    background:#FFC107;
+    color:#000;
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.filter-box button:hover{
+
+    background:#e0a800;
+}
+
+/* ===========================
+   Attendance Table
+=========================== */
+
+.table-box{
+
+    margin-top:25px;
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    overflow-x:auto;
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+
+    background:#FFC107;
+}
+
+th{
+
+    padding:15px;
+    text-align:center;
+    color:#000;
+    font-size:15px;
+}
+
+td{
+
+    padding:15px;
+    text-align:center;
+    border-bottom:1px solid #e5e5e5;
+}
+
+tbody tr:hover{
+
+    background:#f8f8f8;
+}
+
+/* Status */
+
+.present{
+
+    color:#28a745;
+    font-weight:bold;
+}
+
+.absent{
+
+    color:#dc3545;
+    font-weight:bold;
+}
+
+.pending{
+
+    color:#ff9800;
+    font-weight:bold;
+}
+/* ===========================
+   Footer
+=========================== */
+
+.footer{
+    margin-top:25px;
+    text-align:center;
+    color:#777;
+    font-size:14px;
+    padding:15px;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar{
+    width:8px;
+    height:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#FFC107;
+    border-radius:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:#f1f1f1;
+}
+
+/* Selfie & Location Buttons */
+
+.selfie-btn{
+    background:#17a2b8;
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+    transition:.3s;
+}
+
+.selfie-btn:hover{
+    background:#138496;
+}
+
+.location-btn{
+    background:#6f42c1;
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+    transition:.3s;
+}
+
+.location-btn:hover{
+    background:#59359c;
+}
+
+/* Responsive */
+
+@media (max-width:992px){
+
+    .sidebar{
+        width:220px;
+    }
+
+    .main-content{
+        margin-left:220px;
+        width:calc(100% - 220px);
+    }
+
+}
+
+@media (max-width:768px){
+
+    body{
+        display:block;
+    }
+
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+    }
+
+    .sidebar ul li{
+        justify-content:center;
+    }
+
+    .main-content{
+        margin-left:0;
+        width:100%;
+        padding:15px;
+    }
+
+    .topbar{
+        flex-direction:column;
+        text-align:center;
+        gap:15px;
+    }
+
+    .filter-box{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .filter-box input,
+    .filter-box select,
+    .filter-box button{
+        width:100%;
+    }
+
+    table{
+        min-width:850px;
+    }
+
+}
+
+@media (max-width:480px){
+
+    .logo-section img{
+        width:60px;
+    }
+
+    .logo-section h2{
+        font-size:20px;
+    }
+
+    .topbar h1{
+        font-size:22px;
+    }
+
+}

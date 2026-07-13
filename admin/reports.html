@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reports | FCV Admin</title>
+
+<link rel="stylesheet" href="reports.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo-section">
+
+<img src="../logo.png">
+
+<h2>FCV Admin</h2>
+
+</div>
+
+<ul>
+
+<li onclick="window.location.href='admin-dashboard.html'">
+<i class="fa-solid fa-house"></i>
+<span>Dashboard</span>
+</li>
+
+<li onclick="window.location.href='engineers.html'">
+<i class="fa-solid fa-users"></i>
+<span>Engineers</span>
+</li>
+
+<li onclick="window.location.href='attendance.html'">
+<i class="fa-solid fa-calendar-check"></i>
+<span>Attendance</span>
+</li>
+
+<li onclick="window.location.href='gallery.html'">
+<i class="fa-solid fa-image"></i>
+<span>Gallery</span>
+</li>
+
+<li class="active">
+<i class="fa-solid fa-chart-line"></i>
+<span>Reports</span>
+</li>
+
+<li onclick="window.location.href='settings.html'">
+<i class="fa-solid fa-gear"></i>
+<span>Settings</span>
+</li>
+
+<li onclick="logoutAdmin()">
+<i class="fa-solid fa-right-from-bracket"></i>
+<span>Logout</span>
+</li>
+
+</ul>
+
+</div>
+
+<div class="main-content">
+
+<div class="topbar">
+
+<h1>Reports</h1>
+
+<div class="admin-profile">
+
+<i class="fa-solid fa-circle-user"></i>
+
+<span>Admin</span>
+
+</div>
+
+</div>
+
+<div class="filter-box">
+
+<input type="date" id="reportDate">
+
+<input
+type="text"
+id="searchEngineer"
+placeholder="Engineer Name">
+
+<button onclick="loadReports()">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+Search
+
+</button>
+
+<button onclick="exportPDF()">
+
+<i class="fa-solid fa-file-pdf"></i>
+
+PDF
+
+</button>
+
+<button onclick="exportExcel()">
+
+<i class="fa-solid fa-file-excel"></i>
+
+Excel
+
+</button>
+
+</div>
+    <!-- Summary Cards -->
+
+    <div class="cards">
+
+        <div class="card">
+            <i class="fa-solid fa-users"></i>
+            <h3>Total Engineers</h3>
+            <h2 id="totalEngineers">0</h2>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-calendar-check"></i>
+            <h3>Total Attendance</h3>
+            <h2 id="totalAttendance">0</h2>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-camera"></i>
+            <h3>Total Selfies</h3>
+            <h2 id="totalSelfies">0</h2>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-location-dot"></i>
+            <h3>Total Locations</h3>
+            <h2 id="totalLocations">0</h2>
+        </div>
+
+    </div>
+
+    <!-- Reports Table -->
+
+    <div class="table-box">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Engineer</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Selfie</th>
+                    <th>Location</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="reportTable">
+
+                <tr>
+
+                    <td colspan="6">
+
+                        No Report Found
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- Footer -->
+
+    <div class="footer">
+
+        © 2026 FCV Service Master | Reports
+
+    </div>
+
+</div>
+
+<script src="reports.js"></script>
+
+</body>
+</html>

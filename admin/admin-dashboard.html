@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCV Admin Dashboard</title>
+
+    <link rel="stylesheet" href="admin-dashboard.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <div class="logo-section">
+            <img src="../logo.png" alt="Logo">
+            <h2>FCV Admin</h2>
+        </div>
+
+        <ul>
+
+            <li class="active">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </li>
+
+            <li onclick="window.location.href='engineers.html'">
+                <i class="fa-solid fa-users"></i>
+                <span>Engineers</span>
+            </li>
+
+            <li onclick="window.location.href='attendance.html'">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </li>
+
+            <li onclick="window.location.href='gallery.html'">
+                <i class="fa-solid fa-image"></i>
+                <span>Gallery</span>
+            </li>
+
+            <li onclick="window.location.href='reports.html'">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reports</span>
+            </li>
+
+            <li onclick="window.location.href='settings.html'">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </li>
+
+            <li onclick="logoutAdmin()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Header -->
+        <div class="topbar">
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>FCV Service Master Admin Panel</p>
+            </div>
+
+            <div class="admin-profile">
+                <i class="fa-solid fa-circle-user"></i>
+                <span id="adminName">Admin</span>
+            </div>
+
+        </div>
+
+        <!-- Cards -->
+
+        <div class="cards">
+
+            <div class="card">
+                <i class="fa-solid fa-users"></i>
+                <h3>Total Engineers</h3>
+                <h2 id="totalEngineers">0</h2>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-calendar-check"></i>
+                <h3>Today's Attendance</h3>
+                <h2 id="todayAttendance">0</h2>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-camera"></i>
+                <h3>Total Selfies</h3>
+                <h2 id="totalSelfies">0</h2>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-location-dot"></i>
+                <h3>Total Locations</h3>
+                <h2 id="totalLocations">0</h2>
+            </div>
+
+        </div>
+                <!-- Recent Attendance -->
+        <div class="table-box">
+
+            <div class="table-header">
+                <h2>Recent Attendance</h2>
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Engineer</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="attendanceTable">
+
+                    <tr>
+                        <td colspan="4">No Attendance Records Found</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2026 FCV Service Master | All Rights Reserved.</p>
+        </div>
+
+    </div>
+
+    <script src="admin-dashboard.js"></script>
+    <script src="logout.js"></script>
+
+</body>
+</html>

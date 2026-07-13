@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Engineers | FCV Admin</title>
+
+<link rel="stylesheet" href="engineers.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo-section">
+
+<img src="../logo.png">
+
+<h2>FCV Admin</h2>
+
+</div>
+
+<ul>
+
+<li onclick="window.location.href='admin-dashboard.html'">
+<i class="fa-solid fa-house"></i>
+<span>Dashboard</span>
+</li>
+
+<li class="active">
+<i class="fa-solid fa-users"></i>
+<span>Engineers</span>
+</li>
+
+<li onclick="window.location.href='attendance.html'">
+<i class="fa-solid fa-calendar-check"></i>
+<span>Attendance</span>
+</li>
+
+<li onclick="window.location.href='gallery.html'">
+<i class="fa-solid fa-image"></i>
+<span>Gallery</span>
+</li>
+
+<li onclick="window.location.href='reports.html'">
+<i class="fa-solid fa-chart-line"></i>
+<span>Reports</span>
+</li>
+
+<li onclick="window.location.href='settings.html'">
+<i class="fa-solid fa-gear"></i>
+<span>Settings</span>
+</li>
+
+<li onclick="logoutAdmin()">
+<i class="fa-solid fa-right-from-bracket"></i>
+<span>Logout</span>
+</li>
+
+</ul>
+
+</div>
+
+<div class="main-content">
+
+<div class="topbar">
+
+<h1>Engineers</h1>
+
+<button class="add-btn" onclick="openAddEngineer()">
+
+<i class="fa-solid fa-plus"></i>
+
+Add Engineer
+
+</button>
+
+</div>
+
+<div class="search-box">
+
+<input
+type="text"
+id="searchEngineer"
+placeholder="Search Engineer...">
+
+</div>
+        <!-- Engineers Table -->
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Engineer Name</th>
+                        <th>Mobile</th>
+                        <th>PIN</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="engineerTable">
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            No Engineers Found
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Add Engineer Popup -->
+
+    <div class="popup" id="engineerPopup">
+
+        <div class="popup-box">
+
+            <h2>Add Engineer</h2>
+
+            <input
+                type="text"
+                id="engName"
+                placeholder="Engineer Name">
+
+            <input
+                type="text"
+                id="engMobile"
+                placeholder="Mobile Number">
+
+            <input
+                type="password"
+                id="engPin"
+                placeholder="4 Digit PIN"
+                maxlength="4">
+
+            <div class="popup-buttons">
+
+                <button class="save-btn"
+                    onclick="saveEngineer()">
+
+                    Save
+
+                </button>
+
+                <button class="cancel-btn"
+                    onclick="closePopup()">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="engineers.js"></script>
+
+</body>
+
+</html>

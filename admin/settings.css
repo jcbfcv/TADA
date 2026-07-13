@@ -1,0 +1,315 @@
+/* =================================
+   FCV Service Master
+   Settings CSS
+================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+body{
+    background:#f5f6fa;
+}
+
+
+
+/* Sidebar */
+
+.sidebar{
+
+    width:250px;
+    height:100vh;
+    background:#1e1e2f;
+    color:white;
+    position:fixed;
+    top:0;
+    left:0;
+
+}
+
+
+.logo-section{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:20px;
+
+}
+
+
+.logo-section img{
+
+    width:45px;
+    height:45px;
+    border-radius:50%;
+
+}
+
+
+.logo-section h2{
+
+    font-size:22px;
+
+}
+
+
+
+.sidebar ul{
+
+    list-style:none;
+    margin-top:20px;
+
+}
+
+
+.sidebar ul li{
+
+    padding:15px 20px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    cursor:pointer;
+    color:#ddd;
+    transition:0.3s;
+
+}
+
+
+.sidebar ul li:hover,
+.sidebar ul li.active{
+
+    background:#ff4b2b;
+    color:white;
+
+}
+
+
+.sidebar ul li i{
+
+    width:20px;
+
+}
+
+
+
+
+
+/* Main Content */
+
+.main-content{
+
+    margin-left:250px;
+    padding:20px;
+
+}
+
+
+
+/* Topbar */
+
+.topbar{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:white;
+    padding:18px 25px;
+    border-radius:10px;
+    box-shadow:0 2px 10px #ddd;
+
+}
+
+
+.topbar h1{
+
+    color:#333;
+
+}
+
+
+.admin-profile{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+}
+
+
+.admin-profile i{
+
+    font-size:30px;
+    color:#ff4b2b;
+
+}
+
+
+
+
+
+/* Settings Container */
+
+.settings-container{
+
+    margin-top:30px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+
+}
+
+
+
+
+
+/* Setting Card */
+
+.setting-card{
+
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 10px #ddd;
+
+}
+
+
+.setting-card i{
+
+    font-size:35px;
+    color:#ff4b2b;
+    margin-bottom:15px;
+
+}
+
+
+.setting-card h2{
+
+    margin-bottom:20px;
+    color:#333;
+
+}
+
+
+.setting-card label{
+
+    display:block;
+    margin-top:15px;
+    margin-bottom:5px;
+    color:#555;
+
+}
+
+
+
+.setting-card input{
+
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    outline:none;
+
+}
+
+
+
+.setting-card button{
+
+    width:100%;
+    margin-top:20px;
+    padding:12px;
+    background:#ff4b2b;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+
+}
+
+
+.setting-card button:hover{
+
+    opacity:0.8;
+
+}
+
+
+
+.setting-card p{
+
+    margin:12px 0;
+    color:#555;
+
+}
+
+
+
+/* Footer */
+
+.footer{
+
+    margin-top:30px;
+    text-align:center;
+    padding:15px;
+    color:#777;
+
+}
+
+
+
+
+
+/* Responsive */
+
+@media(max-width:1000px){
+
+
+.settings-container{
+
+    grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+
+
+@media(max-width:700px){
+
+
+.sidebar{
+
+    width:70px;
+
+}
+
+
+.sidebar span,
+.logo-section h2{
+
+    display:none;
+
+}
+
+
+.main-content{
+
+    margin-left:70px;
+
+}
+
+
+.settings-container{
+
+    grid-template-columns:1fr;
+
+}
+
+
+}

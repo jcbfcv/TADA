@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Attendance | FCV Admin</title>
+
+<link rel="stylesheet" href="attendance.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<div class="logo-section">
+
+<img src="../logo.png">
+
+<h2>FCV Admin</h2>
+
+</div>
+
+<ul>
+
+<li onclick="window.location.href='admin-dashboard.html'">
+<i class="fa-solid fa-house"></i>
+<span>Dashboard</span>
+</li>
+
+<li onclick="window.location.href='engineers.html'">
+<i class="fa-solid fa-users"></i>
+<span>Engineers</span>
+</li>
+
+<li class="active">
+<i class="fa-solid fa-calendar-check"></i>
+<span>Attendance</span>
+</li>
+
+<li onclick="window.location.href='gallery.html'">
+<i class="fa-solid fa-image"></i>
+<span>Gallery</span>
+</li>
+
+<li onclick="window.location.href='reports.html'">
+<i class="fa-solid fa-chart-line"></i>
+<span>Reports</span>
+</li>
+
+<li onclick="window.location.href='settings.html'">
+<i class="fa-solid fa-gear"></i>
+<span>Settings</span>
+</li>
+
+<li onclick="logoutAdmin()">
+<i class="fa-solid fa-right-from-bracket"></i>
+<span>Logout</span>
+</li>
+
+</ul>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="main-content">
+
+<div class="topbar">
+
+<h1>Attendance</h1>
+
+<div class="admin-profile">
+
+<i class="fa-solid fa-circle-user"></i>
+
+<span>Admin</span>
+
+</div>
+
+</div>
+
+<!-- Filter -->
+
+<div class="filter-box">
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search Engineer">
+
+<input
+type="date"
+id="filterDate">
+
+<select id="statusFilter">
+
+<option value="">All Status</option>
+
+<option>Present</option>
+
+<option>Absent</option>
+
+</select>
+
+<button onclick="loadAttendance()">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+Search
+
+</button>
+
+</div>
+        <!-- Attendance Table -->
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Engineer</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Selfie</th>
+                        <th>Location</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="attendanceTable">
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            No Attendance Records Found
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Footer -->
+
+        <div class="footer">
+
+            © 2026 FCV Service Master | Attendance Panel
+
+        </div>
+
+    </div>
+
+    <script src="attendance.js"></script>
+
+</body>
+
+</html>

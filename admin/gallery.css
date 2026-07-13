@@ -1,0 +1,297 @@
+/* ===========================
+   FCV Gallery CSS
+   Part 1
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    display:flex;
+    color:#333;
+}
+
+/* Sidebar */
+
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:#111827;
+    position:fixed;
+    left:0;
+    top:0;
+    overflow-y:auto;
+}
+
+.logo-section{
+    text-align:center;
+    padding:25px 15px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+.logo-section img{
+    width:75px;
+    margin-bottom:10px;
+}
+
+.logo-section h2{
+    color:#FFC107;
+    font-size:24px;
+}
+
+.sidebar ul{
+    list-style:none;
+    margin-top:20px;
+}
+
+.sidebar ul li{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 20px;
+    color:#fff;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.sidebar ul li i{
+    width:22px;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active{
+    background:#FFC107;
+    color:#000;
+    font-weight:bold;
+}
+
+/* Main */
+
+.main-content{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    padding:25px;
+}
+
+/* Topbar */
+
+.topbar{
+    background:#fff;
+    padding:20px 25px;
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.topbar h1{
+    font-size:28px;
+}
+
+.admin-profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:bold;
+}
+
+.admin-profile i{
+    font-size:32px;
+    color:#FFC107;
+}
+
+/* Search */
+
+.search-box{
+    margin-top:20px;
+}
+
+.search-box input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    outline:none;
+    font-size:15px;
+}
+
+.search-box input:focus{
+    border-color:#FFC107;
+}
+/* ===========================
+   Gallery Grid
+=========================== */
+
+.gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+    margin-top:25px;
+}
+
+/* Gallery Card */
+
+.gallery-card{
+    background:#fff;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.gallery-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+/* Selfie */
+
+.gallery-card img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+    background:#eee;
+}
+
+/* Card Details */
+
+.gallery-info{
+    padding:20px;
+}
+
+.gallery-info h3{
+    font-size:20px;
+    color:#111827;
+    margin-bottom:10px;
+}
+
+.gallery-info p{
+    color:#666;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+/* Button */
+
+.location-btn{
+    width:100%;
+    margin-top:15px;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#FFC107;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.location-btn:hover{
+    background:#e0a800;
+}
+
+.location-btn i{
+    margin-right:8px;
+}
+/* ===========================
+   Footer
+=========================== */
+
+.footer{
+    margin-top:30px;
+    text-align:center;
+    color:#777;
+    font-size:14px;
+    padding:15px;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar{
+    width:8px;
+    height:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#FFC107;
+    border-radius:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:#f1f1f1;
+}
+
+/* Responsive */
+
+@media (max-width:992px){
+
+    .sidebar{
+        width:220px;
+    }
+
+    .main-content{
+        margin-left:220px;
+        width:calc(100% - 220px);
+    }
+
+}
+
+@media (max-width:768px){
+
+    body{
+        display:block;
+    }
+
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+    }
+
+    .sidebar ul li{
+        justify-content:center;
+    }
+
+    .main-content{
+        margin-left:0;
+        width:100%;
+        padding:15px;
+    }
+
+    .topbar{
+        flex-direction:column;
+        gap:15px;
+        text-align:center;
+    }
+
+    .gallery-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media (max-width:480px){
+
+    .logo-section img{
+        width:60px;
+    }
+
+    .logo-section h2{
+        font-size:20px;
+    }
+
+    .topbar h1{
+        font-size:22px;
+    }
+
+    .gallery-card img{
+        height:220px;
+    }
+
+}

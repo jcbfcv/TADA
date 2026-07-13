@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Login | FCV Service Master</title>
+
+<link rel="stylesheet" href="admin.css">
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-box">
+
+        <div class="logo">
+            <img src="../logo.png" alt="Logo">
+        </div>
+
+        <h2>FCV Service Master</h2>
+
+        <p class="subtitle">
+            Admin Login Panel
+        </p>
+
+        <label>Username</label>
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Enter Username"
+        >
+
+        <label>Password</label>
+
+        <div class="password-box">
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter Password"
+            >
+
+            <span id="togglePassword">👁</span>
+
+        </div>
+
+        <button onclick="adminLogin()">
+            Login
+        </button>
+
+        <p class="footer">
+            FCV Service Master © 2026
+        </p>
+
+    </div>
+
+</div>
+
+<script src="admin.js"></script>
+
+</body>
+</html>
