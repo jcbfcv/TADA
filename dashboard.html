@@ -1,285 +1,501 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FCV Service Master</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCV Service Master</title>
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-body{
-background:#f5f5f5;
-}
+        body {
+            background: #f5f5f5;
+        }
 
-.header{
-background:#000;
-color:#fff;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
+        .header {
+            background: #000;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.header h2{
-font-size:22px;
-}
+        .header h2 {
+            font-size: 22px;
+        }
 
-.logout{
-background:#d32f2f;
-color:#fff;
-padding:10px 20px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-}
+        .logout {
+            background: #d32f2f;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
 
-.container{
-padding:15px;
-}
+        .container {
+            padding: 15px;
+        }
 
-.welcome{
-background:#fff;
-padding:15px;
-border-radius:10px;
-box-shadow:0 2px 8px rgba(0,0,0,.15);
-margin-bottom:15px;
-}
+        .welcome {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.15);
+            margin-bottom: 15px;
+        }
 
-.welcome h2{
-font-size:20px;
-}
+        .welcome h2 {
+            font-size: 20px;
+        }
 
-.card{
-background:#fff;
-padding:15px;
-border-radius:10px;
-box-shadow:0 2px 8px rgba(0,0,0,.15);
-margin-bottom:15px;
-}
+        .card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.15);
+            margin-bottom: 15px;
+        }
 
-.card h3{
-color:#f4b400;
-margin-bottom:15px;
-}
+        .card h3 {
+            color: #f4b400;
+            margin-bottom: 15px;
+        }
 
-.row{
-display:flex;
-justify-content:space-between;
-gap:20px;
-}
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
 
-.col{
-flex:1;
-}
+        .col {
+            flex: 1;
+        }
 
-.col p{
-margin:10px 0;
-font-size:15px;
-}
+        .col p {
+            margin: 10px 0;
+            font-size: 15px;
+        }
 
-.complaint{
-margin-top:15px;
-padding-top:10px;
-border-top:1px solid #ddd;
-font-weight:bold;
-}
+        .complaint {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            font-weight: bold;
+        }
 
-.selfie-box{
-background:#fff;
-padding:15px;
-border-radius:10px;
-box-shadow:0 2px 8px rgba(0,0,0,.15);
-margin-bottom:15px;
-}
+        .selfie-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.15);
+            margin-bottom: 15px;
+        }
 
-.selfie-box h3{
-color:#f4b400;
-margin-bottom:15px;
-}
+        .selfie-box h3 {
+            color: #f4b400;
+            margin-bottom: 15px;
+        }
 
-#camera{
-width:100%;
-height:260px;
-background:#000;
-border-radius:10px;
-object-fit:cover;
-}
+        #camera {
+            width: 100%;
+            height: 260px;
+            background: #000;
+            border-radius: 10px;
+            object-fit: cover;
+        }
 
-#photo{
-display:none;
-width:100%;
-height:260px;
-border-radius:10px;
-object-fit:cover;
-margin-top:10px;
-}
+        #photo {
+            display: none;
+            width: 100%;
+            height: 260px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-top: 10px;
+        }
 
-#captureBtn{
-width:100%;
-padding:14px;
-margin-top:15px;
-background:#2196F3;
-color:white;
-border:none;
-border-radius:10px;
-font-size:17px;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
-}
+        #captureBtn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .3s;
+        }
 
-#captureBtn:hover{
-background:#1976D2;
-}
+        #captureBtn:hover {
+            background: #1976D2;
+        }
 
-.historyBtn{
-width:100%;
-padding:15px;
-margin-top:15px;
-background:#FFC107;
-border:none;
-border-radius:10px;
-font-size:17px;
-font-weight:bold;
-cursor:pointer;
-}
+        .historyBtn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            background: #FFC107;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-/* --- CUSTOM POPUP MODAL STYLES --- */
-.modal-overlay {
-display: none;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0,0,0,0.5);
-backdrop-filter: blur(3px);
-z-index: 9999;
-justify-content: center;
-align-items: center;
-}
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
 
-.modal-content {
-background: #fff;
-padding: 25px;
-border-radius: 12px;
-width: 85%;
-max-width: 360px;
-text-align: center;
-box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-animation: scaleUp 0.3s ease-out;
-}
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            animation: scaleUp 0.3s ease-out;
+        }
 
-.modal-content h4 {
-color: #28a745;
-font-size: 20px;
-margin-bottom: 10px;
-}
+        .modal-content h4 {
+            color: #28a745;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
 
-.modal-content p {
-color: #555;
-font-size: 15px;
-margin-bottom: 20px;
-line-height: 1.4;
-}
+        .modal-content p {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
 
-.modal-close-btn {
-background: #000;
-color: #fff;
-border: none;
-padding: 10px 30px;
-border-radius: 8px;
-font-size: 15px;
-font-weight: bold;
-cursor: pointer;
-width: 100%;
-}
+        .modal-close-btn {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
 
-.modal-close-btn:hover {
-background: #222;
-}
-
-@keyframes scaleUp {
-from { transform: scale(0.9); opacity: 0; }
-to { transform: scale(1); opacity: 1; }
-}
-</style>
-<!-- Supabase Library Exposed Globally -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        @keyframes scaleUp {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+    <!-- Include Supabase JS CDN Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<div class="header">
-<h2>FCV Service Master</h2>
-<button class="logout" onclick="logout()">Logout</button>
-</div>
+    <div class="header">
+        <h2>FCV Service Master</h2>
+        <button class="logout" onclick="logoutEngineerSequence()">Logout</button>
+    </div>
 
-<div class="container">
+    <div class="container">
 
-<div class="welcome">
-<h2>Welcome, <span id="engineerName"></span></h2>
-</div>
+        <!-- Dynamic Timing Greetings Frame -->
+        <div class="welcome">
+            <h2><span id="greetingTimeText">Hello</span>, <span id="engineerName">Engineer</span></h2>
+        </div>
 
-<!-- Green User Status / Alert Tracker Box -->
-<div id="statusTrackerBox" style="background: #e8f5e9; border: 2px solid #28a745; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,.05);">
-    <div style="display: flex; align-items: center; gap: 12px;">
-        <span style="font-size: 20px;">🟢</span>
-        <div>
-            <h4 id="statusTitle" style="color: #2e7d32; font-size: 16px; margin-bottom: 3px; font-weight: bold;">Status: Active</h4>
-            <p id="statusMessage" style="color: #555; font-size: 14px; margin-bottom: 5px;">Ready for attendance check-in.</p>
-            <p style="color: #444; font-size: 13px; margin: 0; font-weight: bold;">📊 Daily Submissions: <span id="dailyCountText" style="color: #000;">Loading...</span></p>
+        <!-- Green User Status / Alert Tracker Box -->
+        <div id="statusTrackerBox" style="background: #e8f5e9; border: 2px solid #28a745; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,.05);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 20px;">🟢</span>
+                <div>
+                    <h4 id="statusTitle" style="color: #2e7d32; font-size: 16px; margin-bottom: 3px; font-weight: bold;">Status: Active</h4>
+                    <p id="statusMessage" style="color: #555; font-size: 14px; margin-bottom: 5px;">Ready for attendance check-in.</p>
+                    <p style="color: #444; font-size: 13px; margin: 0; font-weight: bold;">📊 Daily Submissions: <span id="dailyCountText" style="color: #000;">0 submission(s) today</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Assigned Deputations</h3>
+            <div class="row">
+                <div class="col">
+                    <p><b>Workshop:</b> <span id="workshop">On Site</span></p>
+                    <p><b>Call Type:</b> <span id="callType">U/W</span></p>
+                    <p><b>Primary/Secondary:</b> <span id="engineerType">Primary Engineer</span></p>
+                </div>
+                <div class="col">
+                    <p><b>Customer:</b> <span id="customer">Loading...</span></p>
+                    <p><b>Mobile:</b> <span id="mobile">Loading...</span></p>
+                    <p><b>Machine No:</b> <span id="machine">Loading...</span></p>
+                </div>
+            </div>
+            <div class="complaint">
+                Complaint : <span id="complaint">Loading active complaint...</span>
+            </div>
+        </div>
+
+        <div class="selfie-box">
+            <h3>Selfie Verification</h3>
+            <video id="camera" autoplay playsinline></video>
+            <canvas id="canvas" style="display:none;"></canvas>
+            <img id="photo" alt="Captured Selfie">
+            <button id="captureBtn" onclick="triggerSelfieCaptureWorkflow()">📷 Capture Photo</button>
+        </div>
+
+        <button class="historyBtn" onclick="window.location.href='history.html'">Attendance History</button>
+
+    </div>
+
+    <!-- Custom Popup Component -->
+    <div id="customAlertModal" class="modal-overlay">
+        <div class="modal-content">
+            <h4 id="modalTitle">Success!</h4>
+            <p id="modalMessage">Your selfie and location coordinates have been submitted successfully.</p>
+            <button id="modalCloseBtn" class="modal-close-btn" onclick="closeCustomAlertPopup()">OK</button>
         </div>
     </div>
-</div>
 
-<div class="card">
-<h3>Assigned Deputations</h3>
-<div class="row">
-<div class="col">
-<p><b>Workshop:</b> <span id="workshop">On Site</span></p>
-<p><b>Call Type:</b> <span id="callType">U/W</span></p>
-<p><b>Primary/Secondary:</b> <span id="engineerType">Primary Engineer</span></p>
-</div>
-<div class="col">
-<p><b>Customer:</b> <span id="customer">Demo Customer</span></p>
-<p><b>Mobile:</b> <span id="mobile">9876543210</span></p>
-<p><b>Machine No:</b> <span id="machine">3609279</span></p>
-</div>
-</div>
-<div class="complaint">
-Complaint : <span id="complaint">Diesel Gauge Problem</span>
-</div>
-</div>
+    <script>
+        // ===================================================
+        // SUPABASE CONNECTION ARRAYS
+        // ===================================================
+        const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
+        const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
+        
+        const { createClient } = window.supabase;
+        const supabase = createClient(DB_URL, DB_KEY);
 
-<div class="selfie-box">
-<h3>Selfie Verification</h3>
-<video id="camera" autoplay playsinline></video>
-<canvas id="canvas" style="display:none;"></canvas>
-<img id="photo" alt="Captured Selfie">
-<button id="captureBtn">📷 Capture Photo</button>
-</div>
+        window.onload = function() {
+            setDynamicGreetingMessage();
+            verifySessionAndFetchProfile();
+            initializeHardwareCamera();
+        }
 
-<button class="historyBtn" onclick="openHistory()">Attendance History</button>
+        // 1. Automatic Shift Greeting Logic
+        function setDynamicGreetingMessage() {
+            const currentHour = new Date().getHours();
+            let textGreeting = "Hello";
+            if (currentHour >= 4 && currentHour < 12) textGreeting = "Good Morning";
+            else if (currentHour >= 12 && currentHour < 17) textGreeting = "Good Afternoon";
+            else if (currentHour >= 17 && currentHour < 22) textGreeting = "Good Evening";
+            
+            document.getElementById("greetingTimeText").innerText = textGreeting;
+        }
 
-</div>
+        // 2. Absolute Session Sync Logic & Dynamic Data Fetch
+        async function verifySessionAndFetchProfile() {
+            // Login page se save ki gayi ID ko local storage se find karein
+            let targetId = localStorage.getItem("engineer_id") || localStorage.getItem("engineer_session_key");
+            const displayField = document.getElementById("engineerName");
 
-<!-- Custom Popup Component -->
-<div id="customAlertModal" class="modal-overlay">
-<div class="modal-content">
-<h4 id="modalTitle">Success!</h4>
-<p id="modalMessage">Your selfie and location coordinates have been submitted successfully.</p>
-<button id="modalCloseBtn" class="modal-close-btn">OK</button>
-</div>
-</div>
+            // Redirect to login if session is empty
+            if (!targetId) {
+                console.log("No active session key found. Redirecting to login...");
+                window.location.href = "login.html";
+                return;
+            }
 
-<script src="dashboard.js"></script>
+            try {
+                // Database query to get the Engineer Name
+                const { data: profile, error } = await supabase
+                    .from('engineer_profiles')
+                    .select('engineer_name')
+                    .eq('id', targetId)
+                    .maybeSingle();
+                
+                if (error) throw error;
 
+                if (profile && profile.engineer_name) {
+                    const parsedName = profile.engineer_name;
+                    
+                    // DOM UI and Cache Update
+                    displayField.innerText = parsedName;
+                    localStorage.setItem("engineer_name", parsedName);
+                    
+                    // Sync logs daily limit counter
+                    loadDailySubmissionCounterLogs(parsedName);
+                    
+                    // Fetch real-time assigned jobs/deputations for this engineer
+                    fetchAssignedDeputations(targetId);
+                } else {
+                    displayField.innerText = "Engineer";
+                    resetClaimsUI("No active profile data found.");
+                }
+            } catch(e) { 
+                console.error("Profile Fetch Error: ", e); 
+                // Local cache fallback recovery on internet drop
+                let cachedName = localStorage.getItem("engineer_name");
+                if (cachedName) displayField.innerText = cachedName;
+                resetClaimsUI("Network disconnected.");
+            }
+        }
+
+        // Helper function to dynamically fetch active assigned claims
+        async function fetchAssignedDeputations(engineerId) {
+            try {
+                const { data: claim, error } = await supabase
+                    .from('claims')
+                    .select('*')
+                    .eq('engineer_id', engineerId)
+                    .eq('status', 'Pending') // Sirf pending claims filter karein
+                    .limit(1)
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (claim) {
+                    document.getElementById("customer").innerText = claim.customer_name || "N/A";
+                    document.getElementById("mobile").innerText = claim.customer_mobile || "N/A";
+                    document.getElementById("machine").innerText = claim.machine_serial_no || "N/A";
+                    document.getElementById("complaint").innerText = claim.complaint || "No active description";
+                } else {
+                    resetClaimsUI("No pending assignments today.");
+                }
+            } catch (err) { 
+                console.error("Claims query failure: ", err); 
+                resetClaimsUI("Failed to load active duties.");
+            }
+        }
+
+        function resetClaimsUI(message) {
+            document.getElementById("customer").innerText = "N/A";
+            document.getElementById("mobile").innerText = "N/A";
+            document.getElementById("machine").innerText = "N/A";
+            document.getElementById("complaint").innerText = message;
+        }
+
+        // 3. Submissions Daily Counter Sync
+        async function loadDailySubmissionCounterLogs(engineerSearchStringName) {
+            try {
+                const startOfDayTimestamp = new Date();
+                startOfDayTimestamp.setHours(0,0,0,0);
+
+                const { data: logRecords, error } = await supabase
+                    .from('attendance_logs')
+                    .select('*')
+                    .eq('engineer_name', engineerSearchStringName)
+                    .gte('submitted_at', startOfDayTimestamp.toISOString());
+
+                if (!error && logRecords) {
+                    document.getElementById("dailyCountText").innerText = `${logRecords.length} submission(s) today`;
+                }
+            } catch (fail) { console.error(fail); }
+        }
+
+        // 4. Camera Stream Initialization
+        let mediaStreamTrackReference = null;
+        function initializeHardwareCamera() {
+            const videoFeedContainer = document.getElementById("camera");
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+                .then(stream => {
+                    mediaStreamTrackReference = stream;
+                    videoFeedContainer.srcObject = stream;
+                })
+                .catch(err => { console.error("Camera access blocked:", err); });
+        }
+
+        // 5. Trigger Photo Capture Sequence
+        function triggerSelfieCaptureWorkflow() {
+            const video = document.getElementById("camera");
+            const canvas = document.getElementById("canvas");
+            const photo = document.getElementById("photo");
+            
+            const context = canvas.getContext("2d");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const dataUrlBase64Image = canvas.toDataURL("image/jpeg");
+            photo.src = dataUrlBase64Image;
+            
+            video.style.display = "none";
+            photo.style.display = "block";
+
+            fetchGeoLocationCoordinatesAndUpload();
+        }
+
+        // 6. Geolocation Metadata Fetcher
+        function fetchGeoLocationCoordinatesAndUpload() {
+            if (!navigator.geolocation) {
+                executeUploadPipeline(0, 0);
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => executeUploadPipeline(pos.coords.latitude, pos.coords.longitude),
+                (err) => executeUploadPipeline(0, 0),
+                { enableHighAccuracy: true, timeout: 8000 }
+            );
+        }
+
+        // 7. Supabase Real-Time Insert Core Execution Engine
+        async function executeUploadPipeline(lat, lon) {
+            const currentEngineerName = document.getElementById("engineerName").innerText;
+            try {
+                const { error } = await supabase
+                    .from('attendance_logs')
+                    .insert([{
+                        engineer_name: currentEngineerName,
+                        latitude: lat,
+                        longitude: lon,
+                        status: "Present",
+                        image_url: "https://ludsxcigohoyriplccfm.supabase.co/storage/v1/object/public/attendance_selfies/placeholder.jpg",
+                        submitted_at: new Date().toISOString()
+                    }]);
+
+                if (error) {
+                    showCustomPopupAlertModal("Submission Failure", error.message);
+                } else {
+                    showCustomPopupAlertModal("Success!", "Your selfie and location coordinates have been submitted successfully.");
+                    loadDailySubmissionCounterLogs(currentEngineerName);
+                }
+            } catch (err) {
+                showCustomPopupAlertModal("System Error", "Database connection lost.");
+            }
+        }
+
+        function showCustomPopupAlertModal(titleText, bodyMessage) {
+            document.getElementById("modalTitle").innerText = titleText;
+            document.getElementById("modalMessage").innerText = bodyMessage;
+            document.getElementById("customAlertModal").style.display = "flex";
+        }
+
+        function closeCustomAlertPopup() {
+            document.getElementById("customAlertModal").style.display = "none";
+            document.getElementById("camera").style.display = "block";
+            document.getElementById("photo").style.display = "none";
+        }
+
+        function logoutEngineerSequence() {
+            if (confirm("Are you sure you want to exit the dashboard?")) {
+                if (mediaStreamTrackReference) {
+                    mediaStreamTrackReference.getTracks().forEach(track => track.stop());
+                }
+                localStorage.clear();
+                window.location.href = "login.html";
+            }
+        }
+    </script>
 </body>
+
 </html>

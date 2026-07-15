@@ -83,7 +83,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Engineer</th>
+                        <th>Engineer Name</th> <!-- UPDATED COLUMN HEADER -->
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
@@ -107,7 +107,7 @@
 
     <script>
         // ===================================================
-        // 2. SUPABASE INITIALIZATION
+        // SUPABASE INITIALIZATION
         // ===================================================
         const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
         const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
@@ -133,7 +133,7 @@
 
         async function initializeAttendanceData() {
             try {
-                // 1. Fetch Engineer Names mapping to resolve IDs
+                // 1. Fetch Engineer Names mapping to resolve fallback IDs
                 const { data: profiles, error: profError } = await attendanceSupabase
                     .from('engineer_profiles')
                     .select('id, engineer_name');
@@ -153,7 +153,8 @@
         async function fetchRawAttendanceLogs() {
             const { data: logs, error } = await attendanceSupabase
                 .from('attendance_logs')
-                .select('*');
+                .select('*')
+                .order('submitted_at', { ascending: false }); // Sort by latest submission
 
             if (error) {
                 console.error("Query Crash:", error);
@@ -176,19 +177,20 @@
             }
 
             dataList.forEach(log => {
-                // Fallback architecture to auto-detect any alternative timestamp structures
-                const rawDateStr = log.date || log.timestamp || log.time || log.created_at || new Date();
+                // Formatting Date and Time securely
+                const rawDateStr = log.submitted_at || log.date || log.timestamp || log.created_at || new Date();
                 const dateObj = new Date(rawDateStr);
                 
                 const localDate = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
                 const localTime = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
 
-                const engineerName = engineersProfileMap[log.engineer_id] || "System Engineer";
+                // RESOLVED NAME ASSIGNMENT: Direct value takes priority over mapped value
+                const dynamicEngineerName = log.engineer_name || engineersProfileMap[log.engineer_id] || "Unknown Engineer";
                 const status = log.status || "Present";
                 
                 // Handling Optional fields (Selfie URL and Coordinates Mapping)
-                const selfieCell = log.selfie_url ? 
-                    `<a href="${log.selfie_url}" target="_blank" style="color: #cf1f1f; font-weight:600;"><i class="fa-solid fa-image"></i> View</a>` : 
+                const selfieCell = log.image_url || log.selfie_url ? 
+                    `<a href="${log.image_url || log.selfie_url}" target="_blank" style="color: #cf1f1f; font-weight:600;"><i class="fa-solid fa-image"></i> View</a>` : 
                     `<span style="color:#94a3b8;">No Image</span>`;
                     
                 const locationCell = (log.latitude && log.longitude) ? 
@@ -197,10 +199,10 @@
 
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${engineerName}</strong></td>
+                        <td><strong>${dynamicEngineerName}</strong></td>
                         <td>${localDate}</td>
                         <td>${localTime}</td>
-                        <td><span style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight:700; text-transform:uppercase; background:${status === 'Present' ? '#dcfce7':'#fee2e2'}; color:${status === 'Present' ? '#15803d':'#b91c1c'};">${status}</span></td>
+                        <td><span style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight:700; text-transform:uppercase; background:${status.toUpperCase() === 'PRESENT' ? '#dcfce7':'#fee2e2'}; color:${status.toUpperCase() === 'PRESENT' ? '#15803d':'#b91c1c'};">${status}</span></td>
                         <td>${selfieCell}</td>
                         <td>${locationCell}</td>
                     </tr>
@@ -212,22 +214,23 @@
         function applyFilters() {
             const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
             const dateVal = document.getElementById("filterDate").value; // Format: YYYY-MM-DD
-            const statusVal = document.getElementById("statusFilter").value;
+            const statusVal = document.getElementById("statusFilter").value.toLowerCase();
 
             let filteredResults = masterAttendanceLogs;
 
-            // Filter A: Search by Engineer Name string mapping
+            // Filter A: Search by Engineer Name
             if (searchVal) {
                 filteredResults = filteredResults.filter(log => {
-                    const name = (engineersProfileMap[log.engineer_id] || "").toLowerCase();
-                    return name.includes(searchVal);
+                    const explicitName = (log.engineer_name || "").toLowerCase();
+                    const mappedName = (engineersProfileMap[log.engineer_id] || "").toLowerCase();
+                    return explicitName.includes(searchVal) || mappedName.includes(searchVal);
                 });
             }
 
-            // Filter B: Date exact bound evaluation
+            // Filter B: Date Check
             if (dateVal) {
                 filteredResults = filteredResults.filter(log => {
-                    const targetDateStr = log.date || log.timestamp || log.time || log.created_at;
+                    const targetDateStr = log.submitted_at || log.date || log.timestamp || log.created_at;
                     if (!targetDateStr) return false;
                     
                     const formattedLogDate = new Date(targetDateStr).toISOString().split('T')[0];
@@ -237,7 +240,10 @@
 
             // Filter C: Status Check
             if (statusVal) {
-                filteredResults = filteredResults.filter(log => (log.status || "Present") === statusVal);
+                filteredResults = filteredResults.filter(log => {
+                    const currentStatus = (log.status || "Present").toLowerCase();
+                    return currentStatus === statusVal;
+                });
             }
 
             renderAttendanceGrid(filteredResults);

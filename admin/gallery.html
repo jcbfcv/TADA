@@ -82,7 +82,7 @@
 
     <script>
         // ===================================================
-        // 2. SUPABASE INITIALIZATION
+        // SUPABASE INITIALIZATION
         // ===================================================
         const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
         const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
@@ -105,10 +105,9 @@
             initializeGalleryPipeline();
         }
 
-        // 3. Parallel Execution Framework to Map Engineer Names
+        // Parallel Execution Framework to Map Engineer Names Fallback
         async function initializeGalleryPipeline() {
             try {
-                // Fetch profiles map to bind names cleanly without database crash
                 const { data: profiles } = await gallerySupabase
                     .from('engineer_profiles')
                     .select('id, engineer_name');
@@ -123,13 +122,13 @@
             }
         }
 
-        // 4. Data Extraction Node (Optimized for explicit image_url mapping)
+        // Data Extraction Node (Optimized for explicit image_url mapping)
         async function fetchSelfieLogs() {
-            // Ab hum direct explicit image_url check filter laga sakte hain bina kisi error ke
             const { data: logs, error } = await gallerySupabase
                 .from('attendance_logs')
                 .select('*')
-                .not('image_url', 'is', null);
+                .not('image_url', 'is', null)
+                .order('submitted_at', { ascending: false }); // Latest selfies first
 
             if (error) {
                 console.error("Gallery fetch failed:", error);
@@ -145,7 +144,7 @@
             renderGalleryGrid(masterGalleryLogs);
         }
 
-        // 5. Dynamic Grid Card Generation Layout Engine
+        // Dynamic Grid Card Generation Layout Engine
         function renderGalleryGrid(cardsList) {
             const gridContainer = document.getElementById("galleryGrid");
             gridContainer.innerHTML = "";
@@ -156,16 +155,16 @@
             }
 
             cardsList.forEach(log => {
-                const rawTimestamp = log.date || log.timestamp || log.time || log.created_at || new Date();
+                const rawTimestamp = log.submitted_at || log.date || log.timestamp || log.time || log.created_at || new Date();
                 const cardDateObj = new Date(rawTimestamp);
                 
                 const localDate = cardDateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
                 const localTime = cardDateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
                 
-                const currentEngName = engineersMap[log.engineer_id] || "System Engineer";
+                // RESOLVED NAME ASSIGNMENT: Direct engineer_name value column mapping takes priority
+                const currentEngName = log.engineer_name || engineersMap[log.engineer_id] || "Unknown Engineer";
                 
-                // Using the exact confirmed column name here
-                const displayImageSrc = log.image_url || "../images/no-image.png";
+                const displayImageSrc = log.image_url || log.selfie_url || "../images/no-image.png";
                 
                 // Geo-location mapping engine
                 const hasCoordinates = log.latitude && log.longitude;
@@ -189,13 +188,14 @@
             });
         }
 
-        // 6. Live Local Search Stream Filtering
+        // Live Local Search Stream Filtering (Fixed to support dynamic name logic)
         function filterGalleryGrid() {
             const searchVal = document.getElementById("searchGallery").value.toLowerCase().trim();
             
             const filtered = masterGalleryLogs.filter(log => {
-                const boundName = (engineersMap[log.engineer_id] || "").toLowerCase();
-                return boundName.includes(searchVal);
+                const explicitName = (log.engineer_name || "").toLowerCase();
+                const mappedName = (engineersMap[log.engineer_id] || "").toLowerCase();
+                return explicitName.includes(searchVal) || mappedName.includes(searchVal);
             });
             
             renderGalleryGrid(filtered);

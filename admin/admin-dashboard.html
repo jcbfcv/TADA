@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="admin-dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
-    <!-- 1. Include Supabase JS CDN Library Only Once -->
+    <!-- Include Supabase JS CDN Library Only Once -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Include Secured System Logout Controller Component Link -->
+    <script src="logout.js"></script>
 </head>
 
 <body>
@@ -47,7 +49,7 @@
                 <i class="fa-solid fa-gear"></i>
                 <span>Settings</span>
             </li>
-            <li onclick="logoutAdmin()">
+            <li onclick="secureLogoutEngine(event)">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Logout</span>
             </li>
@@ -129,7 +131,7 @@
 
     <script>
         // ===================================================
-        // 2. SUPABASE INITIALIZATION
+        // SUPABASE INITIALIZATION & ENGINE IMPLEMENTATION
         // ===================================================
         const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
         const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
@@ -145,50 +147,54 @@
             }
             
             document.getElementById("adminName").innerText = adminStoredName;
-            
-            loadDashboardStatistics();
-            loadRecentAttendanceGrid();
+            initializeDashboardPipeline();
         }
 
-        // 3. Fetch Live Statistics Counters (Removed created_at filters to prevent errors)
+        async function initializeDashboardPipeline() {
+            await loadDashboardStatistics();
+            await loadRecentAttendanceGrid();
+        }
+
         async function loadDashboardStatistics() {
             try {
-                // A. Total Engineers Counter
+                // Fetch Total Engineers Count
                 const { count: engCount, error: engError } = await dashboardSupabase
                     .from('engineer_profiles')
                     .select('*', { count: 'exact', head: true });
                 
                 if (!engError) document.getElementById("totalEngineers").innerText = engCount || 0;
 
-                // B. Attendance Count (Safe fetch without missing timestamp sorting columns)
-                const { count: attCount, error: attError } = await dashboardSupabase
+                // Fetch Attendance Logs Count Based on Your Real Columns
+                const { data: logs, error: logErr } = await dashboardSupabase
                     .from('attendance_logs')
-                    .select('*', { count: 'exact', head: true });
+                    .select('*');
 
-                if (!attError) {
-                    document.getElementById("todayAttendance").innerText = attCount || 0;
-                    document.getElementById("totalSelfies").innerText = attCount || 0; 
-                    document.getElementById("totalLocations").innerText = attCount || 0;
-                } else {
-                    console.error("Stats Error:", attError);
-                    document.getElementById("todayAttendance").innerText = 0;
+                if (!logErr && logs) {
+                    document.getElementById("todayAttendance").innerText = logs.length;
+                    
+                    // Count entries where image_url is not null/empty
+                    const selfieCount = logs.filter(l => l.image_url && l.image_url.trim() !== "").length;
+                    
+                    // Count entries where latitude is filled (not 0)
+                    const locationCount = logs.filter(l => l.latitude && parseFloat(l.latitude) !== 0).length;
+
+                    document.getElementById("totalSelfies").innerText = selfieCount; 
+                    document.getElementById("totalLocations").innerText = locationCount;
                 }
             } catch (err) {
                 console.error("Statistics collection failure:", err);
             }
         }
 
-        // 4. Load Dynamic Recent Attendance Grid Table rows (Safe implementation fallback)
         async function loadRecentAttendanceGrid() {
-            // Fetch raw data rows without using the non-existent created_at column
+            // Fetch raw logs array directly matching your exact schema structure
             const { data: logs, error } = await dashboardSupabase
                 .from('attendance_logs')
-                .select('*')
-                .limit(10);
+                .select('*');
 
             if (error) {
-                console.error("Attendance query crash details:", error);
-                document.getElementById("attendanceTable").innerHTML = `<tr><td colspan="4" style="text-align: center; color: red;">Failed to retrieve records. Column structure mismatch.</td></tr>`;
+                console.error("Attendance query failure:", error);
+                document.getElementById("attendanceTable").innerHTML = `<tr><td colspan="4" style="text-align: center; color: red;">Failed to retrieve records.</td></tr>`;
                 return;
             }
 
@@ -200,26 +206,29 @@
                 return;
             }
 
-            // Fetch engineer profiles map separately
-            const { data: profiles } = await dashboardSupabase
-                .from('engineer_profiles')
-                .select('id, engineer_name');
+            // Strict Sorting: Order items by your exact database column 'submitted_at' (Latest first)
+            logs.sort((x, y) => new Date(y.submitted_at || 0) - new Date(x.submitted_at || 0));
 
-            const profileMap = {};
-            if (profiles) {
-                profiles.forEach(p => { profileMap[p.id] = p.engineer_name; });
-            }
+            // Extract the top 10 rows for dashboard presentation matrix
+            const recentLogs = logs.slice(0, 10);
 
-            // Map values dynamically into structural rows safely
-            logs.forEach(log => {
-                // Detecting any alternate fallback date field if exists, else using current frontend time
-                const rawDate = log.date || log.timestamp || log.time || new Date();
-                const logDateObj = new Date(rawDate);
+            recentLogs.forEach(log => {
+                // FIXED: Mapping explicitly to your exact database column 'submitted_at'
+                const photoCapturedTimestamp = log.submitted_at;
                 
-                const localDate = logDateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-                const localTime = logDateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                let localDate = "N/A";
+                let localTime = "N/A";
+
+                if (photoCapturedTimestamp) {
+                    const logDateObj = new Date(photoCapturedTimestamp);
+                    if (!isNaN(logDateObj.getTime())) {
+                        localDate = logDateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                        localTime = logDateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    }
+                }
                 
-                const engineerDisplay = profileMap[log.engineer_id] || "System Engineer";
+                // FIXED: Direct link mapping to your exact database column name 'engineer_name'
+                const engineerDisplay = log.engineer_name || "Engineer";
                 const logStatus = log.status || "Present";
 
                 tbody.innerHTML += `
@@ -227,15 +236,10 @@
                         <td><strong>${engineerDisplay}</strong></td>
                         <td>${localDate}</td>
                         <td>${localTime}</td>
-                        <td><span style="padding: 4px 8px; background: #e2e8f0; border-radius: 4px; font-size: 12px; font-weight:600;">${logStatus}</span></td>
+                        <td><span style="padding: 4px 8px; background: ${logStatus === 'Present' ? '#dcfce7':'#fee2e2'}; color: ${logStatus === 'Present' ? '#15803d':'#b91c1c'}; border-radius: 4px; font-size: 12px; font-weight:600;">${logStatus}</span></td>
                     </tr>
                 `;
             });
-        }
-
-        function logoutAdmin() {
-            localStorage.clear();
-            window.location.href = "admin-login.html";
         }
     </script>
 </body>

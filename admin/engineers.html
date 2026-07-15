@@ -9,8 +9,24 @@
     <link rel="stylesheet" href="engineers.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
-    <!-- 1. Include Supabase JS CDN Library Only Once -->
+    <!-- Include Supabase JS CDN Library Only Once -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* Custom UI Dropdown styling for branch selection */
+        .popup-box select {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 0 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 </head>
 
 <body>
@@ -62,15 +78,15 @@
         </div>
 
         <div class="search-box">
-            <input type="text" id="searchEngineer" placeholder="Search Engineer by Name or Employee ID..." oninput="filterEngineers()">
+            <input type="text" id="searchEngineer" placeholder="Search Engineer by Name or Branch..." oninput="filterEngineers()">
         </div>
 
-        <!-- Engineers Table -->
+        <!-- Engineers Table Box -->
         <div class="table-box">
             <table>
                 <thead>
                     <tr>
-                        <th>Employee ID</th>
+                        <th>Branch Name</th>
                         <th>Engineer Name</th>
                         <th>Mobile</th>
                         <th>PIN</th>
@@ -87,7 +103,7 @@
         </div>
     </div>
 
-    <!-- Add Engineer Popup -->
+    <!-- Add Engineer Popup Modal -->
     <div class="popup" id="engineerPopup" style="display: none;">
         <div class="popup-box">
             <h2>Add Engineer</h2>
@@ -98,6 +114,11 @@
             <input type="text" id="engDesignation" placeholder="Designation (e.g. Service Engineer)">
             <input type="password" id="engPin" placeholder="4 Digit PIN" maxlength="4">
             
+            <!-- Dynamic Branch Selector Box -->
+            <select id="engBranch">
+                <option value="">Select Assigned Branch</option>
+            </select>
+            
             <div class="popup-buttons">
                 <button class="save-btn" id="saveBtn" onclick="saveEngineer()">Save</button>
                 <button class="cancel-btn" onclick="closePopup()">Cancel</button>
@@ -107,18 +128,17 @@
 
     <script>
         // ===================================================
-        // 2. SUPABASE CONFIGURATION (Using Clean Instance Name)
+        // SUPABASE CONFIGURATION
         // ===================================================
         const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
         const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
         
-        // Destructure from window object using a unique variable name to prevent duplicate errors
         const { createClient: makeSupabaseClient } = window.supabase;
         const engineersSupabase = makeSupabaseClient(DB_URL, DB_KEY);
 
         let allEngineers = []; 
 
-        // Router Gate Protection
+        // Initial Routing Protection Verification Gate
         window.onload = function() {
             const adminName = localStorage.getItem("admin_name");
             if (!adminName) { 
@@ -126,18 +146,38 @@
                 return; 
             }
             fetchEngineers();
+            loadBranchesIntoDropdown();
         }
 
-        // 3. Fetch Engineers from Database
+        // 1. Fetch Active Branches to Populate Dropdown Select Fields
+        async function loadBranchesIntoDropdown() {
+            try {
+                const { data, error } = await engineersSupabase
+                    .from('branches')
+                    .select('id, branch_name')
+                    .eq('status', 'Active')
+                    .order('branch_name', { ascending: true });
+
+                if (!error && data) {
+                    const branchSelect = document.getElementById("engBranch");
+                    branchSelect.innerHTML = '<option value="">Select Assigned Branch</option>';
+                    data.forEach(branch => {
+                        branchSelect.innerHTML += `<option value="${branch.id}">${branch.branch_name}</option>`;
+                    });
+                }
+            } catch (err) { console.error("Error loading branches into dropdown:", err); }
+        }
+
+        // 2. Fetch Engineers from Virtual SQL View Engine (Solves No Branch issue)
         async function fetchEngineers() {
             const { data, error } = await engineersSupabase
-                .from('engineer_profiles')
+                .from('view_engineer_profiles_with_branches')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) {
-                console.error("Fetch Error:", error);
-                alert("Database engine failure.");
+                console.error("Fetch Error Details:", error);
+                alert("Database engine connection failure.");
                 return;
             }
 
@@ -145,7 +185,7 @@
             renderTable(allEngineers);
         }
 
-        // 4. Render Table Grid Dynamically
+        // 3. Render Table Content Dynamically
         function renderTable(list) {
             const tbody = document.getElementById("engineerTable");
             tbody.innerHTML = "";
@@ -156,9 +196,11 @@
             }
 
             list.forEach(eng => {
+                const resolvedBranchName = eng.branch_name ? eng.branch_name : 'No Branch';
+                
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${eng.employee_id}</strong></td>
+                        <td><strong>${resolvedBranchName}</strong></td> 
                         <td>${eng.engineer_name} <br><small style="color: #64748b; font-size:11px;">${eng.designation}</small></td>
                         <td>${eng.mobile_number}</td>
                         <td><code>${eng.pin}</code></td>
@@ -173,27 +215,28 @@
             });
         }
 
-        // 5. Search / Filter Engineers locally
+        // 4. Search and Local Client-Side Filters
         function filterEngineers() {
             const query = document.getElementById("searchEngineer").value.toLowerCase();
-            const filtered = allEngineers.filter(eng => 
-                eng.engineer_name.toLowerCase().includes(query) || 
-                eng.employee_id.toLowerCase().includes(query)
-            );
+            const filtered = allEngineers.filter(eng => {
+                const bName = eng.branch_name ? eng.branch_name.toLowerCase() : '';
+                return eng.engineer_name.toLowerCase().includes(query) || bName.includes(query);
+            });
             renderTable(filtered);
         }
 
-        // 6. Save Engineer to Database
+        // 5. Save New Engineer Profile Instance
         async function saveEngineer() {
             const empId = document.getElementById("empId").value.trim();
             const name = document.getElementById("engName").value.trim();
             const mobile = document.getElementById("engMobile").value.trim();
             const designation = document.getElementById("engDesignation").value.trim();
             const pin = document.getElementById("engPin").value.trim();
+            const branchId = document.getElementById("engBranch").value;
             const saveBtn = document.getElementById("saveBtn");
 
-            if (!empId || !name || !mobile || !designation || !pin) {
-                alert("Please fill in all the details.");
+            if (!empId || !name || !mobile || !designation || !pin || !branchId) {
+                alert("Please fill in all details, including assigning a branch.");
                 return;
             }
 
@@ -218,12 +261,13 @@
                     mobile_number: mobile, 
                     designation: designation,
                     pin: pin,
+                    branch_id: branchId, 
                     status: 'Active'
                 }]);
 
             if (error) {
-                console.error("Save Error:", error);
-                alert("Failed to save engineer: " + (error.message.includes("unique") ? "Employee ID or Mobile already exists." : error.message));
+                console.error("Save Error Operations:", error);
+                alert("Failed to save profile: " + (error.message.includes("unique") ? "Employee ID or Mobile unique constraint conflict." : error.message));
                 saveBtn.innerText = "Save";
                 saveBtn.disabled = false;
                 return;
@@ -234,7 +278,7 @@
             fetchEngineers();
         }
 
-        // 7. Toggle Engineer Active/Inactive Status
+        // 6. Toggle Active/Inactive Status Engine
         async function toggleStatus(id, currentStatus) {
             const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
             
@@ -244,14 +288,14 @@
                 .eq('id', id);
 
             if (error) {
-                alert("Could not update engineer status.");
+                alert("Could not update state profile status.");
                 return;
             }
 
             fetchEngineers();
         }
 
-        // Popup Actions
+        // Modal Controls
         function openAddEngineer() {
             document.getElementById("engineerPopup").style.display = "flex";
             document.getElementById("empId").value = "";
@@ -259,6 +303,7 @@
             document.getElementById("engMobile").value = "";
             document.getElementById("engDesignation").value = "";
             document.getElementById("engPin").value = "";
+            document.getElementById("engBranch").value = "";
             document.getElementById("saveBtn").innerText = "Save";
             document.getElementById("saveBtn").disabled = false;
         }

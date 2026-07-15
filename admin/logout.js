@@ -1,34 +1,30 @@
 // ==========================================================================
-// FCV Service Master
-// logout.js - Secure Authentication Token Extinguisher
+// FCV Service Master - Secured Unique Logout Controller
 // ==========================================================================
 
-function logoutAdmin(event) {
-    // 1. Prevent default event bubble tracking to avoid sudden document reload loops
+function secureLogoutEngine(event) {
+    // 1. Stop early reloads
     if (event) {
         event.preventDefault();
+        event.stopPropagation();
     }
 
-    // 2. Interactive user confirmation dialogue prompt
-    const confirmLogout = confirm("Are you sure you want to log out from FCV Admin Panel?");
-    if (!confirmLogout) {
-        return; // Terminate action instantly if admin cancels
-    }
+    // 2. Clear focus/active triggers
+    console.log("Secure logout engine sequence initialized...");
 
-    // 3. Clear all potential dashboard cache variations from storage clusters
-    // Lowercase format parameters matching cross-page sync modules
-    localStorage.removeItem("admin_name");
-    localStorage.removeItem("admin_mobile");
+    // 3. Absolute confirmation check prompt box
+    const userChoice = confirm("Are you sure you want to log out from FCV Admin Panel?");
     
-    // Explicit safety flush for old key variables
-    localStorage.removeItem("adminName");
-    localStorage.removeItem("adminPassword");
-    localStorage.removeItem("adminLoggedIn");
-
-    // 4. Absolute structural cache isolation wipe out
-    localStorage.clear();
-    sessionStorage.clear();
-
-    // 5. Hard bounce relocation router (Wipes dashboard views from browser back-button history)
-    window.location.replace("admin-login.html");
+    if (userChoice === true) {
+        console.log("Executing session destruction...");
+        
+        // Clear everything safely
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Permanent redirection history wipe
+        window.location.replace("admin-login.html");
+    } else {
+        console.log("Logout aborted by system administrator.");
+    }
 }

@@ -109,7 +109,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Engineer</th>
+                        <th>Engineer Name</th> <!-- UPDATED COLUMN HEADER -->
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
@@ -133,7 +133,7 @@
 
     <script>
         // ===================================================
-        // 2. SUPABASE INITIALIZATION & PIPELINE MANAGEMENT
+        // SUPABASE INITIALIZATION & PIPELINE MANAGEMENT
         // ===================================================
         const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
         const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
@@ -156,7 +156,7 @@
             initializeReportsPipeline();
         }
 
-        // 3. Orchestration Framework
+        // Orchestration Framework
         async function initializeReportsPipeline() {
             try {
                 // A. Pull profiles database map
@@ -180,7 +180,8 @@
         async function loadCoreReportsData() {
             const { data: logs, error } = await reportSupabase
                 .from('attendance_logs')
-                .select('*');
+                .select('*')
+                .order('submitted_at', { ascending: false });
 
             if (error) {
                 console.error("Database call failure:", error);
@@ -193,11 +194,10 @@
             renderReportsGrid(masterReportLogs);
         }
 
-        // 4. Live Array Counter Synchronization Engine
+        // Live Array Counter Synchronization Engine
         function updateSummaryCounters(currentList) {
             document.getElementById("totalAttendance").innerText = currentList.length;
             
-            // Checking fields against the valid image_url we discovered
             const selfieCount = currentList.filter(l => l.image_url || l.selfie_url).length;
             const locationCount = currentList.filter(l => l.latitude && l.longitude).length;
             
@@ -205,7 +205,7 @@
             document.getElementById("totalLocations").innerText = locationCount;
         }
 
-        // 5. Grid View Renderer Node
+        // Grid View Renderer Node
         function renderReportsGrid(dataArray) {
             const tbody = document.getElementById("reportTable");
             tbody.innerHTML = "";
@@ -216,13 +216,14 @@
             }
 
             dataArray.forEach(log => {
-                const rawTimestamp = log.date || log.timestamp || log.time || log.created_at || new Date();
+                const rawTimestamp = log.submitted_at || log.date || log.timestamp || log.time || log.created_at || new Date();
                 const dObj = new Date(rawTimestamp);
                 
                 const formattedDate = dObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
                 const formattedTime = dObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
                 
-                const engineerName = engineersNameMap[log.engineer_id] || "System Engineer";
+                // RESOLVED NAME ASSIGNMENT: Direct value takes priority over mapped object structure
+                const dynamicEngineerName = log.engineer_name || engineersNameMap[log.engineer_id] || "Unknown Engineer";
                 const currentStatus = log.status || "Present";
                 
                 const activeImg = log.image_url || log.selfie_url;
@@ -236,10 +237,10 @@
 
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${engineerName}</strong></td>
+                        <td><strong>${dynamicEngineerName}</strong></td>
                         <td>${formattedDate}</td>
                         <td>${formattedTime}</td>
-                        <td><span style="padding:4px 8px; border-radius:12px; font-size:11px; font-weight:700; background:${currentStatus === 'Present' ? '#dcfce7':'#fee2e2'}; color:${currentStatus === 'Present' ? '#15803d':'#b91c1c'};">${currentStatus}</span></td>
+                        <td><span style="padding:4px 8px; border-radius:12px; font-size:11px; font-weight:700; background:${currentStatus.toUpperCase() === 'PRESENT' ? '#dcfce7':'#fee2e2'}; color:${currentStatus.toUpperCase() === 'PRESENT' ? '#15803d':'#b91c1c'};">${currentStatus}</span></td>
                         <td>${selfieCell}</td>
                         <td>${locationCell}</td>
                     </tr>
@@ -247,7 +248,7 @@
             });
         }
 
-        // 6. Action Filter Processing Logic
+        // Action Filter Processing Logic
         function applyReportFilters() {
             const searchVal = document.getElementById("searchEngineer").value.toLowerCase().trim();
             const dateVal = document.getElementById("reportDate").value; // Format: YYYY-MM-DD
@@ -256,14 +257,15 @@
 
             if (searchVal) {
                 filterOutput = filterOutput.filter(log => {
-                    const name = (engineersNameMap[log.engineer_id] || "").toLowerCase();
-                    return name.includes(searchVal);
+                    const explicitName = (log.engineer_name || "").toLowerCase();
+                    const mappedName = (engineersNameMap[log.engineer_id] || "").toLowerCase();
+                    return explicitName.includes(searchVal) || mappedName.includes(searchVal);
                 });
             }
 
             if (dateVal) {
                 filterOutput = filterOutput.filter(log => {
-                    const tStr = log.date || log.timestamp || log.time || log.created_at;
+                    const tStr = log.submitted_at || log.date || log.timestamp || log.time || log.created_at;
                     if (!tStr) return false;
                     return new Date(tStr).toISOString().split('T')[0] === dateVal;
                 });
@@ -273,24 +275,51 @@
             renderReportsGrid(filterOutput);
         }
 
-        // ===================================================
-        // 7. EXPORT DATA ROUTINES (PDF & EXCEL ATTACHMENTS)
-        // ===================================================
+        // EXPORT DATA ROUTINES (PDF & EXCEL ATTACHMENTS)
         function exportExcel() {
-            if (masterReportLogs.length === 0) {
+            const searchVal = document.getElementById("searchEngineer").value.toLowerCase().trim();
+            const dateVal = document.getElementById("reportDate").value;
+
+            // Excel export features active current filters automatically
+            let exportLogs = masterReportLogs;
+
+            if (searchVal) {
+                exportLogs = exportLogs.filter(log => {
+                    const expN = (log.engineer_name || "").toLowerCase();
+                    const mapN = (engineersNameMap[log.engineer_id] || "").toLowerCase();
+                    return expN.includes(searchVal) || mapN.includes(searchVal);
+                });
+            }
+
+            if (dateVal) {
+                exportLogs = exportLogs.filter(log => {
+                    const tStr = log.submitted_at || log.date || log.timestamp || log.time || log.created_at;
+                    if (!tStr) return false;
+                    return new Date(tStr).toISOString().split('T')[0] === dateVal;
+                });
+            }
+
+            if (exportLogs.length === 0) {
                 alert("No data available to translate into spreadsheet files.");
                 return;
             }
 
-            const formattedRows = masterReportLogs.map(log => ({
-                "Engineer Name": engineersNameMap[log.engineer_id] || "System Engineer",
-                "Log Date": log.date || log.timestamp || "N/A",
-                "Log Time": log.time || "N/A",
-                "Status Badge": log.status || "Present",
-                "Latitude": log.latitude || "N/A",
-                "Longitude": log.longitude || "N/A",
-                "Visual Asset Path": log.image_url || log.selfie_url || "None"
-            }));
+            const formattedRows = exportLogs.map(log => {
+                const rawTimestamp = log.submitted_at || log.date || log.timestamp || log.time || log.created_at;
+                const dObj = new Date(rawTimestamp);
+                const localDate = dObj.toLocaleDateString('en-IN');
+                const localTime = dObj.toLocaleTimeString('en-IN');
+
+                return {
+                    "Engineer Name": log.engineer_name || engineersNameMap[log.engineer_id] || "Unknown Engineer",
+                    "Log Date": localDate,
+                    "Log Time": localTime,
+                    "Status": log.status || "Present",
+                    "Latitude": log.latitude || "N/A",
+                    "Longitude": log.longitude || "N/A",
+                    "Selfie URL": log.image_url || log.selfie_url || "None"
+                };
+            });
 
             const worksheet = XLSX.utils.json_to_sheet(formattedRows);
             const workbook = XLSX.utils.book_new();

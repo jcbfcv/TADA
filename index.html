@@ -8,7 +8,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- 1. Include Supabase JS CDN Library -->
+<!-- Include Supabase JS CDN Library -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -182,17 +182,25 @@ font-size:15px;
 
 <script>
 // ==========================================
-// 2. SUPABASE INITIALIZATION
+// SUPABASE INITIALIZATION
 // ==========================================
 const SUPABASE_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
 
-// Fixed duplicate declaration issue here
 const { createClient } = window.supabase;
 const supabaseClientInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const otpInputs = document.querySelectorAll(".otp-input");
 let verifiedEngineerData = null; 
+
+// Initial Session Check Validation Hook
+window.onload = function() {
+    let activeSessionToken = localStorage.getItem("engineer_id") || localStorage.getItem("engineer_session_key");
+    if (activeSessionToken) {
+        console.log("Active profile session matched. Routing to dashboard...");
+        window.location.href = "dashboard.html";
+    }
+}
 
 // Auto-focus Shifting for PIN digits
 otpInputs.forEach((input, index) => {
@@ -205,6 +213,10 @@ otpInputs.forEach((input, index) => {
     input.addEventListener("keydown", function(e) {
         if (e.key === "Backspace" && this.value === "" && index > 0) {
             otpInputs[index - 1].focus();
+        }
+        // Submits form smoothly on pressing Enter inside the final digits field
+        if (e.key === "Enter" && index === otpInputs.length - 1) {
+            verifyPIN();
         }
     });
 });
@@ -221,10 +233,10 @@ async function checkMobile() {
     document.getElementById("pinBtn").innerText = "Checking...";
     document.getElementById("pinBtn").disabled = true;
 
-    // Fixed database calling syntax matching instance name
+    // Database lookup to verify phone structure limits
     const { data, error } = await supabaseClientInstance
         .from('engineer_profiles')
-        .select('id, mobile_number, pin, status')
+        .select('id, engineer_name, mobile_number, pin, status')
         .eq('mobile_number', mobile)
         .eq('status', 'Active')
         .maybeSingle();
@@ -242,7 +254,7 @@ async function checkMobile() {
         return;
     }
 
-    // Success: Mobile found -> Show PIN screen
+    // Success: Mobile found -> Show PIN screen view elements
     verifiedEngineerData = data; 
     document.getElementById("otpSection").style.display = "block";
     document.getElementById("pinBtn").style.display = "none";
@@ -268,7 +280,11 @@ async function verifyPIN() {
     document.getElementById("loginBtn").disabled = true;
 
     if (verifiedEngineerData && verifiedEngineerData.pin === pinInput) {
+        // Caching engineer identifier AND name values into browser memory engine
         localStorage.setItem("engineer_id", verifiedEngineerData.id);
+        localStorage.setItem("engineer_name", verifiedEngineerData.engineer_name);
+        localStorage.setItem("engineer_session_key", verifiedEngineerData.id);
+        
         window.location.href = "dashboard.html";
     } else {
         alert("Invalid PIN. Please try again.");
