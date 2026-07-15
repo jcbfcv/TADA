@@ -1,359 +1,294 @@
-/* ===========================
-   FCV Attendance CSS
-   Part 1
-=========================== */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+/* ==========================================================================
+   GLOBAL CONFIGURATIONS
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-body{
-    background:#f4f6f9;
-    display:flex;
-    color:#333;
+body {
+    background: #f8fafc;
+    color: #1e293b;
+    display: flex;
+    min-height: 100vh;
 }
 
-/* Sidebar */
-
-.sidebar{
-    width:250px;
-    height:100vh;
-    background:#111827;
-    position:fixed;
-    left:0;
-    top:0;
-    overflow-y:auto;
+/* ==========================================================================
+   SIDEBAR COMPONENT STYLE CONTROL
+   ========================================================================== */
+.sidebar {
+    width: 260px;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 100;
 }
 
-.logo-section{
-    text-align:center;
-    padding:25px 15px;
-    border-bottom:1px solid rgba(255,255,255,.15);
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
 }
 
-.logo-section img{
-    width:75px;
-    margin-bottom:10px;
+.logo-section img {
+    width: 40px;
+    height: auto;
 }
 
-.logo-section h2{
-    color:#FFC107;
-    font-size:24px;
+.logo-section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
 }
 
-.sidebar ul{
-    list-style:none;
-    margin-top:20px;
+.sidebar ul {
+    list-style: none;
 }
 
-.sidebar ul li{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:16px 20px;
-    color:#fff;
-    cursor:pointer;
-    transition:.3s;
+.sidebar ul li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 16px;
+    color: #94a3b8;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
 }
 
-.sidebar ul li i{
-    width:22px;
+.sidebar ul li i {
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar ul li span {
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .sidebar ul li:hover,
-.sidebar ul li.active{
-    background:#FFC107;
-    color:#000;
-    font-weight:bold;
+.sidebar ul li.active {
+    background: #1e293b;
+    color: #cf1f1f; /* Frontier Red Identity Match */
 }
 
-/* Main Content */
-
-.main-content{
-    margin-left:250px;
-    width:calc(100% - 250px);
-    padding:25px;
+/* ==========================================================================
+   MAIN VIEWPORT & CORE LAYOUT
+   ========================================================================== */
+.main-content {
+    flex: 1;
+    margin-left: 260px; /* Offset space allocation for sticky navigation menu */
+    padding: 40px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Topbar */
-
-.topbar{
-    background:#fff;
-    padding:20px 25px;
-    border-radius:12px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-.topbar h1{
-    font-size:28px;
-    color:#111827;
+.topbar h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
 }
 
-.admin-profile{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-weight:bold;
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
 }
 
-.admin-profile i{
-    font-size:32px;
-    color:#FFC107;
+.admin-profile i {
+    font-size: 20px;
+    color: #64748b;
 }
-/* ===========================
-   Filter Box
-=========================== */
 
-.filter-box{
-    margin-top:25px;
-    background:#fff;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
+.admin-profile span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+}
 
-    display:flex;
-    gap:15px;
-    align-items:center;
-    flex-wrap:wrap;
+/* ==========================================================================
+   INTERACTIVE FILTER MECHANISM
+   ========================================================================== */
+.filter-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 24px;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.filter-box input[type="text"] {
+    flex: 2;
+    min-width: 200px;
+}
+
+.filter-box input[type="date"],
+.filter-box select {
+    flex: 1;
+    min-width: 150px;
 }
 
 .filter-box input,
-.filter-box select{
-
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    outline:none;
-    font-size:15px;
-    min-width:180px;
-    flex:1;
+.filter-box select {
+    height: 44px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 14px;
+    outline: none;
+    color: #334155;
+    background: #ffffff;
+    transition: all 0.3s ease;
 }
 
 .filter-box input:focus,
-.filter-box select:focus{
-
-    border-color:#FFC107;
+.filter-box select:focus {
+    border-color: #cf1f1f;
+    box-shadow: 0 0 0 4px rgba(207, 31, 31, 0.1);
 }
 
-.filter-box button{
-
-    background:#FFC107;
-    color:#000;
-    border:none;
-    padding:12px 22px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
-    transition:.3s;
+.filter-box button {
+    height: 44px;
+    padding: 0 24px;
+    background: #cf1f1f;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease;
 }
 
-.filter-box button:hover{
-
-    background:#e0a800;
+.filter-box button:hover {
+    background: #820e0e;
 }
 
-/* ===========================
-   Attendance Table
-=========================== */
-
-.table-box{
-
-    margin-top:25px;
-    background:#fff;
-    border-radius:12px;
-    padding:20px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-    overflow-x:auto;
+/* ==========================================================================
+   ATTENDANCE DATA TABLE DESIGN
+   ========================================================================== */
+.table-box {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 30px;
 }
 
-table{
-
-    width:100%;
-    border-collapse:collapse;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
 }
 
-thead{
-
-    background:#FFC107;
+th, td {
+    padding: 16px 24px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-th{
-
-    padding:15px;
-    text-align:center;
-    color:#000;
-    font-size:15px;
+th {
+    background: #f8fafc;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-td{
-
-    padding:15px;
-    text-align:center;
-    border-bottom:1px solid #e5e5e5;
+td {
+    font-size: 14px;
+    color: #334155;
+    vertical-align: middle;
 }
 
-tbody tr:hover{
-
-    background:#f8f8f8;
+tr:last-child td {
+    border-bottom: none;
 }
 
-/* Status */
-
-.present{
-
-    color:#28a745;
-    font-weight:bold;
+/* Interactive cell item styling hooks */
+td a {
+    text-decoration: none;
+    font-size: 13px;
+    transition: opacity 0.2s ease;
 }
 
-.absent{
-
-    color:#dc3545;
-    font-weight:bold;
+td a:hover {
+    opacity: 0.8;
 }
 
-.pending{
-
-    color:#ff9800;
-    font-weight:bold;
-}
-/* ===========================
-   Footer
-=========================== */
-
-.footer{
-    margin-top:25px;
-    text-align:center;
-    color:#777;
-    font-size:14px;
-    padding:15px;
+td strong {
+    color: #0f172a;
+    font-weight: 600;
 }
 
-/* Scrollbar */
-
-::-webkit-scrollbar{
-    width:8px;
-    height:8px;
+/* ==========================================================================
+   SYSTEM FOOTER PANEL
+   ========================================================================== */
+.footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 13px;
+    color: #94a3b8;
 }
 
-::-webkit-scrollbar-thumb{
-    background:#FFC107;
-    border-radius:10px;
-}
-
-::-webkit-scrollbar-track{
-    background:#f1f1f1;
-}
-
-/* Selfie & Location Buttons */
-
-.selfie-btn{
-    background:#17a2b8;
-    color:#fff;
-    border:none;
-    padding:8px 14px;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:13px;
-    transition:.3s;
-}
-
-.selfie-btn:hover{
-    background:#138496;
-}
-
-.location-btn{
-    background:#6f42c1;
-    color:#fff;
-    border:none;
-    padding:8px 14px;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:13px;
-    transition:.3s;
-}
-
-.location-btn:hover{
-    background:#59359c;
-}
-
-/* Responsive */
-
-@media (max-width:992px){
-
-    .sidebar{
-        width:220px;
+/* ==========================================================================
+   BREAKPOINTS RESPONSIVE MATRIX
+   ========================================================================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+        padding: 30px 10px;
     }
-
-    .main-content{
-        margin-left:220px;
-        width:calc(100% - 220px);
+    .sidebar h2, .sidebar span, .logo-section img {
+        display: none;
     }
-
-}
-
-@media (max-width:768px){
-
-    body{
-        display:block;
+    .sidebar ul li {
+        justify-content: center;
+        padding: 12px;
     }
-
-    .sidebar{
-        width:100%;
-        height:auto;
-        position:relative;
+    .main-content {
+        margin-left: 70px;
+        padding: 20px;
     }
-
-    .sidebar ul li{
-        justify-content:center;
+    .filter-box {
+        flex-direction: column;
+        align-items: stretch;
     }
-
-    .main-content{
-        margin-left:0;
-        width:100%;
-        padding:15px;
+    .filter-box input, .filter-box select, .filter-box button {
+        width: 100%;
     }
-
-    .topbar{
-        flex-direction:column;
-        text-align:center;
-        gap:15px;
-    }
-
-    .filter-box{
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    .filter-box input,
-    .filter-box select,
-    .filter-box button{
-        width:100%;
-    }
-
-    table{
-        min-width:850px;
-    }
-
-}
-
-@media (max-width:480px){
-
-    .logo-section img{
-        width:60px;
-    }
-
-    .logo-section h2{
-        font-size:20px;
-    }
-
-    .topbar h1{
-        font-size:22px;
-    }
-
 }

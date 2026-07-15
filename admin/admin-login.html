@@ -1,66 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Admin Login | FCV Service Master</title>
-
-<link rel="stylesheet" href="admin.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Sign In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 1. Include Supabase JS CDN Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+        }
+        body { 
+            background: linear-gradient(135deg, #1e293b, #0f172a); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .login-card { 
+            width: 100%; 
+            max-width: 400px; 
+            background: #ffffff; 
+            border-radius: 16px; 
+            padding: 40px; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); 
+        }
+        h2 { 
+            color: #1e293b; 
+            text-align: center; 
+            margin-bottom: 24px; 
+            font-weight: 700; 
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            font-size: 14px; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            color: #475569; 
+        }
+        .input-field { 
+            width: 100%; 
+            height: 48px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            padding: 0 16px; 
+            font-size: 15px; 
+            outline: none; 
+            transition: 0.3s; 
+        }
+        .input-field:focus { 
+            border-color: #cf1f1f; 
+            box-shadow: 0 0 0 4px rgba(207, 31, 31, 0.15); 
+        }
+        .show-pass-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .show-pass-container input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: #cf1f1f;
+        }
+        .show-pass-container span {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .login-btn { 
+            width: 100%; 
+            height: 48px; 
+            border: none; 
+            border-radius: 8px; 
+            background: #cf1f1f; 
+            color: #ffffff; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            margin-top: 10px; 
+        }
+        .login-btn:hover { 
+            background: #820e0e; 
+        }
+        .login-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="login-container">
-
-    <div class="login-box">
-
-        <div class="logo">
-            <img src="../logo.png" alt="Logo">
-        </div>
-
-        <h2>FCV Service Master</h2>
-
-        <p class="subtitle">
-            Admin Login Panel
-        </p>
-
-        <label>Username</label>
-
-        <input
-            type="text"
-            id="username"
-            placeholder="Enter Username"
-        >
-
-        <label>Password</label>
-
-        <div class="password-box">
-
-            <input
-                type="password"
-                id="password"
-                placeholder="Enter Password"
-            >
-
-            <span id="togglePassword">👁</span>
-
-        </div>
-
-        <button onclick="adminLogin()">
-            Login
-        </button>
-
-        <p class="footer">
-            FCV Service Master © 2026
-        </p>
-
+<div class="login-card">
+    <h2>Admin Login</h2>
+    
+    <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="adminEmail" class="input-field" placeholder="admin@frontier.com">
     </div>
-
+    
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="adminPassword" class="input-field" placeholder="••••••••">
+        
+        <label class="show-pass-container">
+            <input type="checkbox" id="showPasswordCheckbox" onclick="togglePassNative()">
+            <span>Show Password</span>
+        </label>
+    </div>
+    
+    <button id="loginBtn" class="login-btn" onclick="checkAdminLogin()">Access Dashboard</button>
 </div>
 
-<script src="admin.js"></script>
+<script>
+    // ==========================================
+    // 2. SUPABASE CONFIGURATION
+    // ==========================================
+    const SUPABASE_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
+    
+    // Fixed duplicate variable declaration conflict
+    const { createClient } = window.supabase;
+    const adminSupabaseInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // Native standard trigger checkbox routine
+    function togglePassNative() {
+        const passwordInput = document.getElementById("adminPassword");
+        const checkbox = document.getElementById("showPasswordCheckbox");
+        
+        if (checkbox.checked) {
+            passwordInput.type = "text";
+        } else {
+            passwordInput.type = "password";
+        }
+    }
+
+    // Login process linked to Supabase using updated client instance
+    async function checkAdminLogin() {
+        const emailInput = document.getElementById("adminEmail").value.trim();
+        const passwordInput = document.getElementById("adminPassword").value;
+        const loginBtn = document.getElementById("loginBtn");
+
+        if (!emailInput || !passwordInput) {
+            alert("Please enter both email and password.");
+            return;
+        }
+
+        loginBtn.innerText = "Checking...";
+        loginBtn.disabled = true;
+
+        const { data: admin, error } = await adminSupabaseInstance
+            .from('admins')
+            .select('id, full_name, role')
+            .eq('email', emailInput)
+            .eq('password', passwordInput)
+            .maybeSingle();
+
+        if (error) {
+            console.error("Login verification crash:", error);
+            alert("Database connection error. Please try again.");
+            resetButton();
+            return;
+        }
+
+        if (!admin) {
+            alert("Invalid Email or Password. System entry denied.");
+            resetButton();
+            return;
+        }
+
+        // Save session strings locally
+        localStorage.setItem("admin_id", admin.id);
+        localStorage.setItem("admin_name", admin.full_name);
+        localStorage.setItem("admin_role", admin.role);
+        
+        window.location.href = "admin-dashboard.html";
+    }
+
+    function resetButton() {
+        const loginBtn = document.getElementById("loginBtn");
+        loginBtn.innerText = "Access Dashboard";
+        loginBtn.disabled = false;
+    }
+</script>
 </body>
 </html>

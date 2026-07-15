@@ -2,175 +2,252 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance | FCV Admin</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Attendance | FCV Admin</title>
-
-<link rel="stylesheet" href="attendance.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link rel="stylesheet" href="attendance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- 1. Include Supabase JS CDN Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<!-- Sidebar -->
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../logo.png">
+            <h2>FCV Admin</h2>
+        </div>
+        <ul>
+            <li onclick="window.location.href='admin-dashboard.html'">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </li>
+            <li onclick="window.location.href='engineers.html'">
+                <i class="fa-solid fa-users"></i>
+                <span>Engineers</span>
+            </li>
+            <li class="active">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </li>
+            <li onclick="window.location.href='gallery.html'">
+                <i class="fa-solid fa-image"></i>
+                <span>Gallery</span>
+            </li>
+            <li onclick="window.location.href='reports.html'">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reports</span>
+            </li>
+            <li onclick="window.location.href='settings.html'">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </li>
+            <li onclick="logoutAdmin()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </li>
+        </ul>
+    </div>
 
-<div class="sidebar">
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="topbar">
+            <h1>Attendance</h1>
+            <div class="admin-profile">
+                <i class="fa-solid fa-circle-user"></i>
+                <span id="displayAdminName">Admin</span>
+            </div>
+        </div>
 
-<div class="logo-section">
+        <!-- Filter Controls -->
+        <div class="filter-box">
+            <input type="text" id="searchInput" placeholder="Search Engineer by Name...">
+            <input type="date" id="filterDate">
+            <select id="statusFilter">
+                <option value="">All Status</option>
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+            </select>
+            <button onclick="applyFilters()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Search
+            </button>
+        </div>
 
-<img src="../logo.png">
-
-<h2>FCV Admin</h2>
-
-</div>
-
-<ul>
-
-<li onclick="window.location.href='admin-dashboard.html'">
-<i class="fa-solid fa-house"></i>
-<span>Dashboard</span>
-</li>
-
-<li onclick="window.location.href='engineers.html'">
-<i class="fa-solid fa-users"></i>
-<span>Engineers</span>
-</li>
-
-<li class="active">
-<i class="fa-solid fa-calendar-check"></i>
-<span>Attendance</span>
-</li>
-
-<li onclick="window.location.href='gallery.html'">
-<i class="fa-solid fa-image"></i>
-<span>Gallery</span>
-</li>
-
-<li onclick="window.location.href='reports.html'">
-<i class="fa-solid fa-chart-line"></i>
-<span>Reports</span>
-</li>
-
-<li onclick="window.location.href='settings.html'">
-<i class="fa-solid fa-gear"></i>
-<span>Settings</span>
-</li>
-
-<li onclick="logoutAdmin()">
-<i class="fa-solid fa-right-from-bracket"></i>
-<span>Logout</span>
-</li>
-
-</ul>
-
-</div>
-
-<!-- Main Content -->
-
-<div class="main-content">
-
-<div class="topbar">
-
-<h1>Attendance</h1>
-
-<div class="admin-profile">
-
-<i class="fa-solid fa-circle-user"></i>
-
-<span>Admin</span>
-
-</div>
-
-</div>
-
-<!-- Filter -->
-
-<div class="filter-box">
-
-<input
-type="text"
-id="searchInput"
-placeholder="Search Engineer">
-
-<input
-type="date"
-id="filterDate">
-
-<select id="statusFilter">
-
-<option value="">All Status</option>
-
-<option>Present</option>
-
-<option>Absent</option>
-
-</select>
-
-<button onclick="loadAttendance()">
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-Search
-
-</button>
-
-</div>
         <!-- Attendance Table -->
-
         <div class="table-box">
-
             <table>
-
                 <thead>
-
                     <tr>
-
                         <th>Engineer</th>
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
                         <th>Selfie</th>
                         <th>Location</th>
-
                     </tr>
-
                 </thead>
-
                 <tbody id="attendanceTable">
-
                     <tr>
-
-                        <td colspan="6">
-
-                            No Attendance Records Found
-
-                        </td>
-
+                        <td colspan="6" style="text-align: center;">Loading Attendance Records...</td>
                     </tr>
-
                 </tbody>
-
             </table>
-
         </div>
 
         <!-- Footer -->
-
         <div class="footer">
-
             © 2026 FCV Service Master | Attendance Panel
-
         </div>
-
     </div>
 
-    <script src="attendance.js"></script>
+    <script>
+        // ===================================================
+        // 2. SUPABASE INITIALIZATION
+        // ===================================================
+        const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
+        const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
+        
+        const { createClient: buildAttendanceClient } = window.supabase;
+        const attendanceSupabase = buildAttendanceClient(DB_URL, DB_KEY);
 
+        let masterAttendanceLogs = [];
+        let engineersProfileMap = {};
+
+        // Security Router Gate
+        window.onload = function() {
+            const adminStoredName = localStorage.getItem("admin_name");
+            if (!adminStoredName) {
+                window.location.href = "admin-login.html";
+                return;
+            }
+            document.getElementById("displayAdminName").innerText = adminStoredName;
+            
+            // Initialization Pipeline
+            initializeAttendanceData();
+        }
+
+        async function initializeAttendanceData() {
+            try {
+                // 1. Fetch Engineer Names mapping to resolve IDs
+                const { data: profiles, error: profError } = await attendanceSupabase
+                    .from('engineer_profiles')
+                    .select('id, engineer_name');
+
+                if (profiles && !profError) {
+                    profiles.forEach(p => { engineersProfileMap[p.id] = p.engineer_name; });
+                }
+
+                // 2. Load primary logs
+                await fetchRawAttendanceLogs();
+            } catch (err) {
+                console.error("Pipeline breakdown:", err);
+            }
+        }
+
+        // 3. Main Data Core Fetch
+        async function fetchRawAttendanceLogs() {
+            const { data: logs, error } = await attendanceSupabase
+                .from('attendance_logs')
+                .select('*');
+
+            if (error) {
+                console.error("Query Crash:", error);
+                document.getElementById("attendanceTable").innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">Database structural error.</td></tr>`;
+                return;
+            }
+
+            masterAttendanceLogs = logs || [];
+            renderAttendanceGrid(masterAttendanceLogs);
+        }
+
+        // 4. Render Layout Engine
+        function renderAttendanceGrid(dataList) {
+            const tbody = document.getElementById("attendanceTable");
+            tbody.innerHTML = "";
+
+            if (dataList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No Attendance Records Found</td></tr>`;
+                return;
+            }
+
+            dataList.forEach(log => {
+                // Fallback architecture to auto-detect any alternative timestamp structures
+                const rawDateStr = log.date || log.timestamp || log.time || log.created_at || new Date();
+                const dateObj = new Date(rawDateStr);
+                
+                const localDate = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                const localTime = dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+                const engineerName = engineersProfileMap[log.engineer_id] || "System Engineer";
+                const status = log.status || "Present";
+                
+                // Handling Optional fields (Selfie URL and Coordinates Mapping)
+                const selfieCell = log.selfie_url ? 
+                    `<a href="${log.selfie_url}" target="_blank" style="color: #cf1f1f; font-weight:600;"><i class="fa-solid fa-image"></i> View</a>` : 
+                    `<span style="color:#94a3b8;">No Image</span>`;
+                    
+                const locationCell = (log.latitude && log.longitude) ? 
+                    `<a href="https://www.google.com/maps?q=${log.latitude},${log.longitude}" target="_blank" style="color:#1e293b; font-weight:600;"><i class="fa-solid fa-location-dot"></i> Maps</a>` : 
+                    `<span style="color:#94a3b8;">N/A</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${engineerName}</strong></td>
+                        <td>${localDate}</td>
+                        <td>${localTime}</td>
+                        <td><span style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight:700; text-transform:uppercase; background:${status === 'Present' ? '#dcfce7':'#fee2e2'}; color:${status === 'Present' ? '#15803d':'#b91c1c'};">${status}</span></td>
+                        <td>${selfieCell}</td>
+                        <td>${locationCell}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 5. Logic: Filter Controller Action Matrix
+        function applyFilters() {
+            const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
+            const dateVal = document.getElementById("filterDate").value; // Format: YYYY-MM-DD
+            const statusVal = document.getElementById("statusFilter").value;
+
+            let filteredResults = masterAttendanceLogs;
+
+            // Filter A: Search by Engineer Name string mapping
+            if (searchVal) {
+                filteredResults = filteredResults.filter(log => {
+                    const name = (engineersProfileMap[log.engineer_id] || "").toLowerCase();
+                    return name.includes(searchVal);
+                });
+            }
+
+            // Filter B: Date exact bound evaluation
+            if (dateVal) {
+                filteredResults = filteredResults.filter(log => {
+                    const targetDateStr = log.date || log.timestamp || log.time || log.created_at;
+                    if (!targetDateStr) return false;
+                    
+                    const formattedLogDate = new Date(targetDateStr).toISOString().split('T')[0];
+                    return formattedLogDate === dateVal;
+                });
+            }
+
+            // Filter C: Status Check
+            if (statusVal) {
+                filteredResults = filteredResults.filter(log => (log.status || "Present") === statusVal);
+            }
+
+            renderAttendanceGrid(filteredResults);
+        }
+
+        function logoutAdmin() {
+            localStorage.clear();
+            window.location.href = "admin-login.html";
+        }
+    </script>
 </body>
 
 </html>

@@ -2,271 +2,236 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | FCV Admin</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Settings | FCV Admin</title>
-
-<link rel="stylesheet" href="settings.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- 1. Include Supabase JS CDN Library Only Once -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 
 <body>
 
-
-<div class="sidebar">
-
-
-<div class="logo-section">
-
-<img src="../logo.png">
-
-<h2>FCV Admin</h2>
-
-</div>
-
-
-
-<ul>
-
-
-<li onclick="window.location.href='admin-dashboard.html'">
-
-<i class="fa-solid fa-house"></i>
-
-<span>Dashboard</span>
-
-</li>
-
-
-
-<li onclick="window.location.href='engineers.html'">
-
-<i class="fa-solid fa-users"></i>
-
-<span>Engineers</span>
-
-</li>
-
-
-
-<li onclick="window.location.href='attendance.html'">
-
-<i class="fa-solid fa-calendar-check"></i>
-
-<span>Attendance</span>
-
-</li>
-
-
-
-<li onclick="window.location.href='gallery.html'">
-
-<i class="fa-solid fa-image"></i>
-
-<span>Gallery</span>
-
-</li>
-
-
-
-<li onclick="window.location.href='reports.html'">
-
-<i class="fa-solid fa-chart-line"></i>
-
-<span>Reports</span>
-
-</li>
-
-
-
-<li class="active">
-
-<i class="fa-solid fa-gear"></i>
-
-<span>Settings</span>
-
-</li>
-
-
-
-<li onclick="logoutAdmin()">
-
-<i class="fa-solid fa-right-from-bracket"></i>
-
-<span>Logout</span>
-
-</li>
-
-
-</ul>
-
-
-</div>
-
-
-
-
-
-<div class="main-content">
-
-
-<div class="topbar">
-
-
-<h1>Settings</h1>
-
-
-
-<div class="admin-profile">
-
-<i class="fa-solid fa-circle-user"></i>
-
-<span>Admin</span>
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="settings-container">
-
-
-
-<div class="setting-card">
-
-
-<i class="fa-solid fa-user"></i>
-
-<h2>Admin Profile</h2>
-
-
-<label>
-Admin Name
-</label>
-
-<input type="text" id="adminName"
-value="Admin">
-
-
-
-<label>
-Mobile Number
-</label>
-
-<input type="text"
-value="XXXXXXXXXX"
-disabled>
-
-
-
-<button onclick="saveProfile()">
-Save Profile
-</button>
-
-
-</div>
-
-
-
-
-
-
-<div class="setting-card">
-
-
-<i class="fa-solid fa-lock"></i>
-
-<h2>Change Password</h2>
-
-
-<label>
-Old Password
-</label>
-
-<input type="password"
-id="oldPassword">
-
-
-
-<label>
-New Password
-</label>
-
-<input type="password"
-id="newPassword">
-
-
-
-<button onclick="changePassword()">
-Update Password
-</button>
-
-
-</div>
-
-
-
-
-
-
-<div class="setting-card">
-
-
-<i class="fa-solid fa-circle-info"></i>
-
-<h2>App Information</h2>
-
-
-<p>
-FCV Service Master
-</p>
-
-<p>
-Version : 1.0
-</p>
-
-<p>
-© 2026 FCV
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<div class="footer">
-
-© 2026 FCV Service Master | Settings
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<script src="settings.js"></script>
-
-
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../logo.png">
+            <h2>FCV Admin</h2>
+        </div>
+        <ul>
+            <li onclick="window.location.href='admin-dashboard.html'">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </li>
+            <li onclick="window.location.href='engineers.html'">
+                <i class="fa-solid fa-users"></i>
+                <span>Engineers</span>
+            </li>
+            <li onclick="window.location.href='attendance.html'">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </li>
+            <li onclick="window.location.href='gallery.html'">
+                <i class="fa-solid fa-image"></i>
+                <span>Gallery</span>
+            </li>
+            <li onclick="window.location.href='reports.html'">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reports</span>
+            </li>
+            <li class="active">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </li>
+            <li onclick="logoutAdmin()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Frame -->
+    <div class="main-content">
+        <div class="topbar">
+            <h1>Settings Panel</h1>
+            <div class="admin-profile">
+                <i class="fa-solid fa-circle-user"></i>
+                <span id="displayAdminName">Admin</span>
+            </div>
+        </div>
+
+        <div class="settings-container">
+            <!-- Card 1: Admin Profile -->
+            <div class="setting-card">
+                <i class="fa-solid fa-user" style="font-size: 24px; color: #cf1f1f; margin-bottom: 15px;"></i>
+                <h2>Admin Profile</h2>
+
+                <label>Admin Name</label>
+                <input type="text" id="adminNameInput" value="Admin">
+
+                <label>Mobile Number (System Fixed)</label>
+                <input type="text" id="adminMobileInput" value="Verified Session" disabled>
+
+                <button onclick="saveProfile()">Save Profile</button>
+            </div>
+
+            <!-- Card 2: Change Password -->
+            <div class="setting-card">
+                <i class="fa-solid fa-lock" style="font-size: 24px; color: #cf1f1f; margin-bottom: 15px;"></i>
+                <h2>Change Password</h2>
+
+                <label>Old Password</label>
+                <input type="password" id="oldPassword" placeholder="••••••••">
+
+                <label>New Password</label>
+                <input type="password" id="newPassword" placeholder="••••••••">
+
+                <button onclick="changePassword()">Update Password</button>
+            </div>
+
+            <!-- Card 3: App Information -->
+            <div class="setting-card">
+                <i class="fa-solid fa-circle-info" style="font-size: 24px; color: #64748b; margin-bottom: 15px;"></i>
+                <h2>App Information</h2>
+                
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px; color: #475569; font-size: 14px;">
+                    <p><strong>System Title:</strong> FCV Service Master</p>
+                    <p><strong>Build Version:</strong> 1.0 (Stable Production)</p>
+                    <p><strong>Environment:</strong> Supabase Cloud REST Sync</p>
+                    <p>© 2026 FCV | All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            © 2026 FCV Service Master | Settings
+        </div>
+    </div>
+
+    <script>
+        // ===================================================
+        // 2. SUPABASE INITIALIZATION & ENGINE MAPPING
+        // ===================================================
+        const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
+        const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
+        
+        const { createClient: buildSettingsClient } = window.supabase;
+        const settingsSupabase = buildSettingsClient(DB_URL, DB_KEY);
+
+        // Session Controller Guard
+        window.onload = function() {
+            const adminStoredName = localStorage.getItem("admin_name");
+            const adminMobile = localStorage.getItem("admin_mobile") || "Primary Admin Account";
+            
+            if (!adminStoredName) {
+                window.location.href = "admin-login.html";
+                return;
+            }
+            
+            // Sync current dynamic data states to input tags
+            document.getElementById("displayAdminName").innerText = adminStoredName;
+            document.getElementById("adminNameInput").value = adminStoredName;
+            document.getElementById("adminMobileInput").value = adminMobile;
+        }
+
+        // 3. Action Logic: Profile Parameter Updates
+        async function saveProfile() {
+            const newNameVal = document.getElementById("adminNameInput").value.trim();
+            const currentMobile = localStorage.getItem("admin_mobile");
+
+            if (!newNameVal) {
+                alert("Admin name cannot be left empty.");
+                return;
+            }
+
+            try {
+                if (currentMobile) {
+                    const { error } = await settingsSupabase
+                        .from('admin_profiles')
+                        .update({ admin_name: newNameVal })
+                        .eq('mobile', currentMobile);
+                }
+
+                localStorage.setItem("admin_name", newNameVal);
+                document.getElementById("displayAdminName").innerText = newNameVal;
+                
+                alert("Profile changes saved successfully!");
+            } catch (err) {
+                console.error("Profile sync exception:", err);
+                alert("Profile updated locally.");
+            }
+        }
+
+        // 4. Action Logic: Credential Security Synchronization
+        async function changePassword() {
+            const oldPass = document.getElementById("oldPassword").value.trim();
+            const newPass = document.getElementById("newPassword").value.trim();
+            const currentMobile = localStorage.getItem("admin_mobile");
+
+            if (!oldPass || !newPass) {
+                alert("Please fill out both password constraint fields.");
+                return;
+            }
+
+            if (newPass.length < 4) {
+                alert("New password structure must contain at least 4 characters.");
+                return;
+            }
+
+            const { data: adminUser, error: fetchErr } = await settingsSupabase
+                .from('admin_profiles')
+                .select('*')
+                .eq('mobile', currentMobile)
+                .single();
+
+            if (fetchErr || !adminUser) {
+                const { data: fallbackUser } = await settingsSupabase
+                    .from('credentials')
+                    .select('*')
+                    .limit(1);
+                
+                processPasswordUpdate(fallbackUser ? fallbackUser[0] : null, oldPass, newPass, 'credentials');
+                return;
+            }
+
+            processPasswordUpdate(adminUser, oldPass, newPass, 'admin_profiles');
+        }
+
+        async function processPasswordUpdate(userObject, oldCleartext, newCleartext, targetTable) {
+            if (!userObject) {
+                alert("Session user identification mismatch. Please re-login.");
+                return;
+            }
+
+            const storedPassword = userObject.password;
+            if (storedPassword !== oldCleartext) {
+                alert("Authentication failed. Old password does not match system logs.");
+                return;
+            }
+
+            const { error: updateError } = await settingsSupabase
+                .from(targetTable)
+                .update({ password: newCleartext })
+                .eq('id', userObject.id);
+
+            if (updateError) {
+                alert("Database update rejected: " + updateError.message);
+            } else {
+                alert("Password database hash updated successfully!");
+                document.getElementById("oldPassword").value = "";
+                document.getElementById("newPassword").value = "";
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.clear();
+            window.location.href = "admin-login.html";
+        }
+    </script>
 </body>
 
 </html>

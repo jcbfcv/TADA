@@ -2,185 +2,276 @@
 <html lang="en">
 
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Engineers | FCV Admin</title>
-
-<link rel="stylesheet" href="engineers.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineers | FCV Admin</title>
+    
+    <link rel="stylesheet" href="engineers.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- 1. Include Supabase JS CDN Library Only Once -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<div class="sidebar">
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../logo.png">
+            <h2>FCV Admin</h2>
+        </div>
+        <ul>
+            <li onclick="window.location.href='admin-dashboard.html'">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </li>
+            <li class="active">
+                <i class="fa-solid fa-users"></i>
+                <span>Engineers</span>
+            </li>
+            <li onclick="window.location.href='attendance.html'">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </li>
+            <li onclick="window.location.href='gallery.html'">
+                <i class="fa-solid fa-image"></i>
+                <span>Gallery</span>
+            </li>
+            <li onclick="window.location.href='reports.html'">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reports</span>
+            </li>
+            <li onclick="window.location.href='settings.html'">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </li>
+            <li onclick="logoutAdmin()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </li>
+        </ul>
+    </div>
 
-<div class="logo-section">
+    <div class="main-content">
+        <div class="topbar">
+            <h1>Engineers</h1>
+            <button class="add-btn" onclick="openAddEngineer()">
+                <i class="fa-solid fa-plus"></i>
+                Add Engineer
+            </button>
+        </div>
 
-<img src="../logo.png">
+        <div class="search-box">
+            <input type="text" id="searchEngineer" placeholder="Search Engineer by Name or Employee ID..." oninput="filterEngineers()">
+        </div>
 
-<h2>FCV Admin</h2>
-
-</div>
-
-<ul>
-
-<li onclick="window.location.href='admin-dashboard.html'">
-<i class="fa-solid fa-house"></i>
-<span>Dashboard</span>
-</li>
-
-<li class="active">
-<i class="fa-solid fa-users"></i>
-<span>Engineers</span>
-</li>
-
-<li onclick="window.location.href='attendance.html'">
-<i class="fa-solid fa-calendar-check"></i>
-<span>Attendance</span>
-</li>
-
-<li onclick="window.location.href='gallery.html'">
-<i class="fa-solid fa-image"></i>
-<span>Gallery</span>
-</li>
-
-<li onclick="window.location.href='reports.html'">
-<i class="fa-solid fa-chart-line"></i>
-<span>Reports</span>
-</li>
-
-<li onclick="window.location.href='settings.html'">
-<i class="fa-solid fa-gear"></i>
-<span>Settings</span>
-</li>
-
-<li onclick="logoutAdmin()">
-<i class="fa-solid fa-right-from-bracket"></i>
-<span>Logout</span>
-</li>
-
-</ul>
-
-</div>
-
-<div class="main-content">
-
-<div class="topbar">
-
-<h1>Engineers</h1>
-
-<button class="add-btn" onclick="openAddEngineer()">
-
-<i class="fa-solid fa-plus"></i>
-
-Add Engineer
-
-</button>
-
-</div>
-
-<div class="search-box">
-
-<input
-type="text"
-id="searchEngineer"
-placeholder="Search Engineer...">
-
-</div>
         <!-- Engineers Table -->
-
         <div class="table-box">
-
             <table>
-
                 <thead>
-
                     <tr>
-
-                        <th>ID</th>
+                        <th>Employee ID</th>
                         <th>Engineer Name</th>
                         <th>Mobile</th>
                         <th>PIN</th>
                         <th>Status</th>
                         <th>Action</th>
-
                     </tr>
-
                 </thead>
-
                 <tbody id="engineerTable">
-
                     <tr>
-
-                        <td colspan="6">
-
-                            No Engineers Found
-
-                        </td>
-
+                        <td colspan="6" style="text-align: center;">Loading Engineers...</td>
                     </tr>
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
 
     <!-- Add Engineer Popup -->
-
-    <div class="popup" id="engineerPopup">
-
+    <div class="popup" id="engineerPopup" style="display: none;">
         <div class="popup-box">
-
             <h2>Add Engineer</h2>
-
-            <input
-                type="text"
-                id="engName"
-                placeholder="Engineer Name">
-
-            <input
-                type="text"
-                id="engMobile"
-                placeholder="Mobile Number">
-
-            <input
-                type="password"
-                id="engPin"
-                placeholder="4 Digit PIN"
-                maxlength="4">
-
+            
+            <input type="text" id="empId" placeholder="Employee ID (e.g. EMP101)">
+            <input type="text" id="engName" placeholder="Engineer Name">
+            <input type="text" id="engMobile" placeholder="Mobile Number" maxlength="10">
+            <input type="text" id="engDesignation" placeholder="Designation (e.g. Service Engineer)">
+            <input type="password" id="engPin" placeholder="4 Digit PIN" maxlength="4">
+            
             <div class="popup-buttons">
-
-                <button class="save-btn"
-                    onclick="saveEngineer()">
-
-                    Save
-
-                </button>
-
-                <button class="cancel-btn"
-                    onclick="closePopup()">
-
-                    Cancel
-
-                </button>
-
+                <button class="save-btn" id="saveBtn" onclick="saveEngineer()">Save</button>
+                <button class="cancel-btn" onclick="closePopup()">Cancel</button>
             </div>
-
         </div>
-
     </div>
 
-    <script src="engineers.js"></script>
+    <script>
+        // ===================================================
+        // 2. SUPABASE CONFIGURATION (Using Clean Instance Name)
+        // ===================================================
+        const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
+        const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
+        
+        // Destructure from window object using a unique variable name to prevent duplicate errors
+        const { createClient: makeSupabaseClient } = window.supabase;
+        const engineersSupabase = makeSupabaseClient(DB_URL, DB_KEY);
 
+        let allEngineers = []; 
+
+        // Router Gate Protection
+        window.onload = function() {
+            const adminName = localStorage.getItem("admin_name");
+            if (!adminName) { 
+                window.location.href = "admin-login.html"; 
+                return; 
+            }
+            fetchEngineers();
+        }
+
+        // 3. Fetch Engineers from Database
+        async function fetchEngineers() {
+            const { data, error } = await engineersSupabase
+                .from('engineer_profiles')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Fetch Error:", error);
+                alert("Database engine failure.");
+                return;
+            }
+
+            allEngineers = data || [];
+            renderTable(allEngineers);
+        }
+
+        // 4. Render Table Grid Dynamically
+        function renderTable(list) {
+            const tbody = document.getElementById("engineerTable");
+            tbody.innerHTML = "";
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No Engineers Found</td></tr>`;
+                return;
+            }
+
+            list.forEach(eng => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${eng.employee_id}</strong></td>
+                        <td>${eng.engineer_name} <br><small style="color: #64748b; font-size:11px;">${eng.designation}</small></td>
+                        <td>${eng.mobile_number}</td>
+                        <td><code>${eng.pin}</code></td>
+                        <td><span class="status-badge ${eng.status.toLowerCase()}" style="padding:4px 8px; border-radius:12px; font-size:12px; font-weight:600; text-transform:uppercase;">${eng.status}</span></td>
+                        <td>
+                            <button onclick="toggleStatus('${eng.id}', '${eng.status}')" style="background:#1e293b; color:white; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
+                                Mark as ${eng.status === 'Active' ? 'Inactive' : 'Active'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 5. Search / Filter Engineers locally
+        function filterEngineers() {
+            const query = document.getElementById("searchEngineer").value.toLowerCase();
+            const filtered = allEngineers.filter(eng => 
+                eng.engineer_name.toLowerCase().includes(query) || 
+                eng.employee_id.toLowerCase().includes(query)
+            );
+            renderTable(filtered);
+        }
+
+        // 6. Save Engineer to Database
+        async function saveEngineer() {
+            const empId = document.getElementById("empId").value.trim();
+            const name = document.getElementById("engName").value.trim();
+            const mobile = document.getElementById("engMobile").value.trim();
+            const designation = document.getElementById("engDesignation").value.trim();
+            const pin = document.getElementById("engPin").value.trim();
+            const saveBtn = document.getElementById("saveBtn");
+
+            if (!empId || !name || !mobile || !designation || !pin) {
+                alert("Please fill in all the details.");
+                return;
+            }
+
+            if (mobile.length !== 10 || isNaN(mobile)) {
+                alert("Mobile number must be exactly 10 digits.");
+                return;
+            }
+
+            if (pin.length !== 4 || isNaN(pin)) {
+                alert("PIN must be exactly 4 digits.");
+                return;
+            }
+
+            saveBtn.innerText = "Saving...";
+            saveBtn.disabled = true;
+
+            const { data, error } = await engineersSupabase
+                .from('engineer_profiles')
+                .insert([{ 
+                    employee_id: empId,
+                    engineer_name: name, 
+                    mobile_number: mobile, 
+                    designation: designation,
+                    pin: pin,
+                    status: 'Active'
+                }]);
+
+            if (error) {
+                console.error("Save Error:", error);
+                alert("Failed to save engineer: " + (error.message.includes("unique") ? "Employee ID or Mobile already exists." : error.message));
+                saveBtn.innerText = "Save";
+                saveBtn.disabled = false;
+                return;
+            }
+
+            alert("New Engineer profile created successfully!");
+            closePopup();
+            fetchEngineers();
+        }
+
+        // 7. Toggle Engineer Active/Inactive Status
+        async function toggleStatus(id, currentStatus) {
+            const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+            
+            const { error } = await engineersSupabase
+                .from('engineer_profiles')
+                .update({ status: newStatus })
+                .eq('id', id);
+
+            if (error) {
+                alert("Could not update engineer status.");
+                return;
+            }
+
+            fetchEngineers();
+        }
+
+        // Popup Actions
+        function openAddEngineer() {
+            document.getElementById("engineerPopup").style.display = "flex";
+            document.getElementById("empId").value = "";
+            document.getElementById("engName").value = "";
+            document.getElementById("engMobile").value = "";
+            document.getElementById("engDesignation").value = "";
+            document.getElementById("engPin").value = "";
+            document.getElementById("saveBtn").innerText = "Save";
+            document.getElementById("saveBtn").disabled = false;
+        }
+
+        function closePopup() {
+            document.getElementById("engineerPopup").style.display = "none";
+        }
+
+        function logoutAdmin() {
+            localStorage.clear();
+            window.location.href = "admin-login.html";
+        }
+    </script>
 </body>
 
 </html>

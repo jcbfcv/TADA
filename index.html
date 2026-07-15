@@ -8,8 +8,10 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
+<!-- 1. Include Supabase JS CDN Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<style>
 *{
 margin:0;
 padding:0;
@@ -108,14 +110,6 @@ display:none;
 margin-top:25px;
 }
 
-.success-msg{
-font-size:14px;
-text-align:center;
-color:green;
-margin-bottom:18px;
-font-weight:500;
-}
-
 .otp-container{
 display:flex;
 justify-content:space-between;
@@ -137,158 +131,154 @@ transition:.3s;
 border-color:#eb2f2f;
 box-shadow:0 0 8px rgba(37,99,235,.2);
 }
-@media(max-width:480px){
 
-.login-box{
-padding:25px;
-}
-
-.otp-input{
-width:42px;
-height:50px;
-font-size:20px;
-}
-
-button{
-height:48px;
-font-size:15px;
-}
-
-}
 button:disabled{
     opacity:0.5;
     cursor:not-allowed;
 }
 
+@media(max-width:480px){
+.login-box{
+padding:25px;
+}
+.otp-input{
+width:42px;
+height:50px;
+font-size:20px;
+}
+button{
+height:48px;
+font-size:15px;
+}
+}
 </style>
-
 </head>
-
 <body>
 
 <div class="login-box">
+    <div class="logo">
+        <img src="logo.png" alt="Frontier Logo">
+    </div>
 
-<div class="logo">
-    <img src="logo.png"  alt="Frontier Logo">
-</div>
+    <h2>Engineer Login</h2>
+    <p class="subtitle">Login using your registered mobile number</p>
 
-<h2>Engineer Login</h2>
+    <label>Mobile Number</label>
+    <input type="tel" id="mobile" class="input-box" placeholder="Enter 10 digit mobile number" maxlength="10">
 
-<p class="subtitle">
-Login using your registered mobile number
-</p>
+    <button id="pinBtn" onclick="checkMobile()">Enter PIN</button>
 
-<label>Mobile Number</label>
-
-<input
-type="tel"
-id="mobile"
-class="input-box"
-placeholder="Enter 10 digit mobile number"
-maxlength="10"
->
-
-<button id="pinBtn" onclick="sendOTP()">
-Enter PIN
-</button>
-
-<div id="otpSection">
-
-<!--<p class="success-msg">
-OTP sent to your mobile number.<br>
-Please enter the 6-digit OTP.
-</p>-->
-
-<div class="otp-container">
-
-<input class="otp-input" maxlength="1">
-<input class="otp-input" maxlength="1">
-<input class="otp-input" maxlength="1">
-<input class="otp-input" maxlength="1">
-<!--<input class="otp-input" maxlength="1">
-<input class="otp-input" maxlength="1">-->
-
-</div>
-
-<button onclick="verifyOTP()">
-Login
-</button>
-
-</div>
-
+    <div id="otpSection">
+        <label>Enter 4-Digit Security PIN</label>
+        <div class="otp-container">
+            <input class="otp-input" type="password" inputmode="numeric" maxlength="1">
+            <input class="otp-input" type="password" inputmode="numeric" maxlength="1">
+            <input class="otp-input" type="password" inputmode="numeric" maxlength="1">
+            <input class="otp-input" type="password" inputmode="numeric" maxlength="1">
+        </div>
+        <button id="loginBtn" onclick="verifyPIN()">Login</button>
+    </div>
 </div>
 
 <script>
+// ==========================================
+// 2. SUPABASE INITIALIZATION
+// ==========================================
+const SUPABASE_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
+
+// Fixed duplicate declaration issue here
+const { createClient } = window.supabase;
+const supabaseClientInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const otpInputs = document.querySelectorAll(".otp-input");
+let verifiedEngineerData = null; 
 
-otpInputs.forEach((input,index)=>{
-
-input.addEventListener("input",function(){
-
-this.value=this.value.replace(/[^0-9]/g,'');
-
-if(this.value.length===1 && index<otpInputs.length-1){
-otpInputs[index+1].focus();
-}
-
+// Auto-focus Shifting for PIN digits
+otpInputs.forEach((input, index) => {
+    input.addEventListener("input", function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length === 1 && index < otpInputs.length - 1) {
+            otpInputs[index + 1].focus();
+        }
+    });
+    input.addEventListener("keydown", function(e) {
+        if (e.key === "Backspace" && this.value === "" && index > 0) {
+            otpInputs[index - 1].focus();
+        }
+    });
 });
 
-input.addEventListener("keydown",function(e){
+// Step 1: Check if Mobile Number exists in engineer_profiles
+async function checkMobile() {
+    let mobile = document.getElementById("mobile").value;
 
-if(e.key==="Backspace" && this.value==="" && index>0){
-otpInputs[index-1].focus();
+    if (mobile.length !== 10) {
+        alert("Please enter a valid 10 digit mobile number.");
+        return;
+    }
+
+    document.getElementById("pinBtn").innerText = "Checking...";
+    document.getElementById("pinBtn").disabled = true;
+
+    // Fixed database calling syntax matching instance name
+    const { data, error } = await supabaseClientInstance
+        .from('engineer_profiles')
+        .select('id, mobile_number, pin, status')
+        .eq('mobile_number', mobile)
+        .eq('status', 'Active')
+        .maybeSingle();
+
+    if (error) {
+        console.error("Database query failed:", error);
+        alert("Server error. Please try again later.");
+        resetPinButton();
+        return;
+    }
+
+    if (!data) {
+        alert("This mobile number is not registered or active in our records.");
+        resetPinButton();
+        return;
+    }
+
+    // Success: Mobile found -> Show PIN screen
+    verifiedEngineerData = data; 
+    document.getElementById("otpSection").style.display = "block";
+    document.getElementById("pinBtn").style.display = "none";
+    otpInputs[0].focus();
 }
 
-});
-
-});
-
-function sendOTP(){
-
-let mobile=document.getElementById("mobile").value;
-
-if(mobile.length!=10){
-
-alert("Please enter a valid 10 digit mobile number.");
-
-return;
-
+function resetPinButton() {
+    document.getElementById("pinBtn").innerText = "Enter PIN";
+    document.getElementById("pinBtn").disabled = false;
 }
 
-document.getElementById("otpSection").style.display="block";
-document.getElementById("pinBtn").disabled=true;
+// Step 2: Verify the 4-digit security PIN
+async function verifyPIN() {
+    let pinInput = "";
+    otpInputs.forEach(box => { pinInput += box.value; });
 
-otpInputs[0].focus();
+    if (pinInput.length !== 4) {
+        alert("Please enter full 4 digit PIN.");
+        return;
+    }
 
-}
+    document.getElementById("loginBtn").innerText = "Logging in...";
+    document.getElementById("loginBtn").disabled = true;
 
-function verifyOTP(){
-
-let otp="";
-
-otpInputs.forEach(function(box){
-
-otp+=box.value;
-
-});
-
-if(otp.length!=4){
-
-alert("Please enter 4 digit PIN.");
-
-return;
-
-}
-
-/*
-Yahan baad me Google Apps Script ya Firebase se
-OTP verify hoga.
-*/
-
-window.location.href="dashboard.html";
-
+    if (verifiedEngineerData && verifiedEngineerData.pin === pinInput) {
+        localStorage.setItem("engineer_id", verifiedEngineerData.id);
+        window.location.href = "dashboard.html";
+    } else {
+        alert("Invalid PIN. Please try again.");
+        document.getElementById("loginBtn").innerText = "Login";
+        document.getElementById("loginBtn").disabled = false;
+        
+        otpInputs.forEach(box => { box.value = ""; });
+        otpInputs[0].focus();
+    }
 }
 </script>
-
 </body>
 </html>

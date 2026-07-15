@@ -2,149 +2,210 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | FCV Admin</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Gallery | FCV Admin</title>
-
-<link rel="stylesheet" href="gallery.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link rel="stylesheet" href="gallery.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- 1. Include Supabase JS CDN Library Only Once -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-<!-- Sidebar -->
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../logo.png">
+            <h2>FCV Admin</h2>
+        </div>
+        <ul>
+            <li onclick="window.location.href='admin-dashboard.html'">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </li>
+            <li onclick="window.location.href='engineers.html'">
+                <i class="fa-solid fa-users"></i>
+                <span>Engineers</span>
+            </li>
+            <li onclick="window.location.href='attendance.html'">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </li>
+            <li class="active">
+                <i class="fa-solid fa-image"></i>
+                <span>Gallery</span>
+            </li>
+            <li onclick="window.location.href='reports.html'">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reports</span>
+            </li>
+            <li onclick="window.location.href='settings.html'">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </li>
+            <li onclick="logoutAdmin()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </li>
+        </ul>
+    </div>
 
-<div class="sidebar">
-
-<div class="logo-section">
-
-<img src="../logo.png">
-
-<h2>FCV Admin</h2>
-
-</div>
-
-<ul>
-
-<li onclick="window.location.href='admin-dashboard.html'">
-<i class="fa-solid fa-house"></i>
-<span>Dashboard</span>
-</li>
-
-<li onclick="window.location.href='engineers.html'">
-<i class="fa-solid fa-users"></i>
-<span>Engineers</span>
-</li>
-
-<li onclick="window.location.href='attendance.html'">
-<i class="fa-solid fa-calendar-check"></i>
-<span>Attendance</span>
-</li>
-
-<li class="active">
-<i class="fa-solid fa-image"></i>
-<span>Gallery</span>
-</li>
-
-<li onclick="window.location.href='reports.html'">
-<i class="fa-solid fa-chart-line"></i>
-<span>Reports</span>
-</li>
-
-<li onclick="window.location.href='settings.html'">
-<i class="fa-solid fa-gear"></i>
-<span>Settings</span>
-</li>
-
-<li onclick="logoutAdmin()">
-<i class="fa-solid fa-right-from-bracket"></i>
-<span>Logout</span>
-</li>
-
-</ul>
-
-</div>
-
-<div class="main-content">
-
-<div class="topbar">
-
-<h1>Selfie Gallery</h1>
-
-<div class="admin-profile">
-
-<i class="fa-solid fa-circle-user"></i>
-
-<span>Admin</span>
-
-</div>
-
-</div>
-
-<div class="search-box">
-
-<input
-type="text"
-id="searchGallery"
-placeholder="Search Engineer...">
-
-</div>
-
-<div class="gallery-grid" id="galleryGrid">
-            <!-- Gallery Cards -->
-
-        <div class="gallery-card">
-
-            <img src="../images/no-image.png"
-                 id="selfieImage"
-                 alt="Selfie">
-
-            <div class="gallery-info">
-
-                <h3 id="engineerName">
-                    Engineer Name
-                </h3>
-
-                <p id="captureDate">
-                    Date : --
-                </p>
-
-                <p id="captureTime">
-                    Time : --
-                </p>
-
-                <button class="location-btn"
-                        onclick="viewLocation()">
-
-                    <i class="fa-solid fa-location-dot"></i>
-
-                    View Location
-
-                </button>
-
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="topbar">
+            <h1>Selfie Gallery</h1>
+            <div class="admin-profile">
+                <i class="fa-solid fa-circle-user"></i>
+                <span id="displayAdminName">Admin</span>
             </div>
-
         </div>
 
+        <div class="search-box">
+            <input type="text" id="searchGallery" placeholder="Search Engineer by Name..." oninput="filterGalleryGrid()">
+        </div>
+
+        <!-- Dynamic Gallery Grid Template -->
+        <div class="gallery-grid" id="galleryGrid">
+            <div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">
+                Loading Selfie Database Records...
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            © 2026 FCV Service Master | Gallery
+        </div>
     </div>
 
-    <!-- Footer -->
+    <script>
+        // ===================================================
+        // 2. SUPABASE INITIALIZATION
+        // ===================================================
+        const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
+        const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
+        
+        const { createClient: buildGalleryClient } = window.supabase;
+        const gallerySupabase = buildGalleryClient(DB_URL, DB_KEY);
 
-    <div class="footer">
+        let masterGalleryLogs = [];
+        let engineersMap = {};
 
-        © 2026 FCV Service Master | Gallery
+        // Security Route Guard Implementation
+        window.onload = function() {
+            const adminStoredName = localStorage.getItem("admin_name");
+            if (!adminStoredName) {
+                window.location.href = "admin-login.html";
+                return;
+            }
+            document.getElementById("displayAdminName").innerText = adminStoredName;
+            
+            initializeGalleryPipeline();
+        }
 
-    </div>
+        // 3. Parallel Execution Framework to Map Engineer Names
+        async function initializeGalleryPipeline() {
+            try {
+                // Fetch profiles map to bind names cleanly without database crash
+                const { data: profiles } = await gallerySupabase
+                    .from('engineer_profiles')
+                    .select('id, engineer_name');
 
-</div>
+                if (profiles) {
+                    profiles.forEach(p => { engineersMap[p.id] = p.engineer_name; });
+                }
 
-<script src="gallery.js"></script>
+                await fetchSelfieLogs();
+            } catch (err) {
+                console.error("Gallery module setup error:", err);
+            }
+        }
 
+        // 4. Data Extraction Node (Optimized for explicit image_url mapping)
+        async function fetchSelfieLogs() {
+            // Ab hum direct explicit image_url check filter laga sakte hain bina kisi error ke
+            const { data: logs, error } = await gallerySupabase
+                .from('attendance_logs')
+                .select('*')
+                .not('image_url', 'is', null);
+
+            if (error) {
+                console.error("Gallery fetch failed:", error);
+                document.getElementById("galleryGrid").innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; color: red; padding: 20px;">
+                        Failed to retrieve records.<br>
+                        <small style="color: #64748b;">Error: ${error.message}</small>
+                    </div>`;
+                return;
+            }
+
+            masterGalleryLogs = logs || [];
+            renderGalleryGrid(masterGalleryLogs);
+        }
+
+        // 5. Dynamic Grid Card Generation Layout Engine
+        function renderGalleryGrid(cardsList) {
+            const gridContainer = document.getElementById("galleryGrid");
+            gridContainer.innerHTML = "";
+
+            if (cardsList.length === 0) {
+                gridContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">No Selfie Records Found in Database Logs.</div>`;
+                return;
+            }
+
+            cardsList.forEach(log => {
+                const rawTimestamp = log.date || log.timestamp || log.time || log.created_at || new Date();
+                const cardDateObj = new Date(rawTimestamp);
+                
+                const localDate = cardDateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                const localTime = cardDateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                
+                const currentEngName = engineersMap[log.engineer_id] || "System Engineer";
+                
+                // Using the exact confirmed column name here
+                const displayImageSrc = log.image_url || "../images/no-image.png";
+                
+                // Geo-location mapping engine
+                const hasCoordinates = log.latitude && log.longitude;
+                const locationClickAction = hasCoordinates ? 
+                    `window.open('https://www.google.com/maps?q=${log.latitude},${log.longitude}', '_blank')` : 
+                    `alert('Geotag strings missing for this snapshot record.')`;
+
+                gridContainer.innerHTML += `
+                    <div class="gallery-card">
+                        <img src="${displayImageSrc}" alt="Engineer Selfie Snapshot" onerror="this.src='../images/no-image.png'">
+                        <div class="gallery-info">
+                            <h3>${currentEngName}</h3>
+                            <p>Date : ${localDate}</p>
+                            <p>Time : ${localTime}</p>
+                            <button class="location-btn" onclick="${locationClickAction}">
+                                <i class="fa-solid fa-location-dot"></i> View Location
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 6. Live Local Search Stream Filtering
+        function filterGalleryGrid() {
+            const searchVal = document.getElementById("searchGallery").value.toLowerCase().trim();
+            
+            const filtered = masterGalleryLogs.filter(log => {
+                const boundName = (engineersMap[log.engineer_id] || "").toLowerCase();
+                return boundName.includes(searchVal);
+            });
+            
+            renderGalleryGrid(filtered);
+        }
+
+        function logoutAdmin() {
+            localStorage.clear();
+            window.location.href = "admin-login.html";
+        }
+    </script>
 </body>
 
 </html>

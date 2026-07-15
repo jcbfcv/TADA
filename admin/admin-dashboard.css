@@ -1,330 +1,287 @@
-/* ===========================
-   FCV Admin Dashboard CSS
-   Part 1
-=========================== */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+/* ==========================================================================
+   GLOBAL RESET & VARIABILITY SETTINGS
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-body{
-    background:#f4f6f9;
-    display:flex;
-    color:#333;
+body {
+    background: #f8fafc;
+    color: #1e293b;
+    display: flex;
+    min-height: 100vh;
 }
 
-/* Sidebar */
-
-.sidebar{
-    width:250px;
-    height:100vh;
-    background:#111827;
-    position:fixed;
-    top:0;
-    left:0;
-    overflow-y:auto;
+/* ==========================================================================
+   SIDEBAR NAVIGATIONAL COMPONENT
+   ========================================================================== */
+.sidebar {
+    width: 260px;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 100;
 }
 
-.logo-section{
-    text-align:center;
-    padding:25px 15px;
-    border-bottom:1px solid rgba(255,255,255,.15);
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
 }
 
-.logo-section img{
-    width:75px;
-    margin-bottom:10px;
+.logo-section img {
+    width: 40px;
+    height: auto;
 }
 
-.logo-section h2{
-    color:#FFC107;
-    font-size:24px;
+.logo-section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
 }
 
-.sidebar ul{
-    list-style:none;
-    margin-top:20px;
+.sidebar ul {
+    list-style: none;
 }
 
-.sidebar ul li{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:16px 20px;
-    color:#fff;
-    cursor:pointer;
-    transition:0.3s;
-    font-size:16px;
+.sidebar ul li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 16px;
+    color: #94a3b8;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
 }
 
-.sidebar ul li i{
-    width:22px;
-    text-align:center;
+.sidebar ul li i {
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar ul li span {
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .sidebar ul li:hover,
-.sidebar ul li.active{
-    background:#FFC107;
-    color:#000;
-    font-weight:bold;
+.sidebar ul li.active {
+    background: #1e293b;
+    color: #cf1f1f; /* Frontier Identity Red */
 }
 
-/* Main */
-
-.main-content{
-    margin-left:250px;
-    width:calc(100% - 250px);
-    padding:25px;
+/* ==========================================================================
+   MAIN CORE CONTENT FRAME
+   ========================================================================== */
+.main-content {
+    flex: 1;
+    margin-left: 260px; /* Protects sidebar space from overlapping grid */
+    padding: 40px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Header */
-
-.topbar{
-    background:#fff;
-    border-radius:12px;
-    padding:20px 25px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
+/* Topbar Header Configuration */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 20px;
 }
 
-.topbar h1{
-    font-size:28px;
-    color:#111827;
+.topbar h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
 }
 
-.topbar p{
-    color:#666;
-    margin-top:5px;
+.topbar p {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 2px;
 }
 
-.admin-profile{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:18px;
-    font-weight:bold;
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
 }
 
-.admin-profile i{
-    font-size:34px;
-    color:#FFC107;
-}
-/* ===========================
-   Dashboard Cards
-=========================== */
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-    margin-top:25px;
+.admin-profile i {
+    font-size: 20px;
+    color: #64748b;
 }
 
-.card{
-    background:#fff;
-    border-radius:12px;
-    padding:25px;
-    text-align:center;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-    transition:0.3s;
-    cursor:pointer;
+.admin-profile span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
 }
 
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 10px 20px rgba(0,0,0,.15);
+/* ==========================================================================
+   ANALYTICS COUNTER BLOCKS (CARDS GRID)
+   ========================================================================== */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 35px;
 }
 
-.card i{
-    font-size:36px;
-    color:#FFC107;
-    margin-bottom:15px;
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card h3{
-    color:#555;
-    font-size:17px;
-    margin-bottom:10px;
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
-.card h2{
-    font-size:32px;
-    color:#111827;
+.card i {
+    font-size: 24px;
+    color: #cf1f1f;
+    margin-bottom: 16px;
+    display: inline-block;
 }
 
-/* ===========================
-   Table
-=========================== */
-
-.table-box{
-    margin-top:30px;
-    background:#fff;
-    border-radius:12px;
-    padding:20px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
+.card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 6px;
 }
 
-.table-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
+.card h2 {
+    font-size: 30px;
+    font-weight: 700;
+    color: #0f172a;
 }
 
-.table-header h2{
-    font-size:22px;
-    color:#111827;
+/* Decorative subtle block element on cards background edge */
+.card::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: #cf1f1f;
+    opacity: 0.8;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+/* ==========================================================================
+   DATA GRID MATRIX (RECENT ATTENDANCE DATA BLOCK)
+   ========================================================================== */
+.table-box {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    margin-bottom: 30px;
 }
 
-thead{
-    background:#FFC107;
+.table-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-th{
-    padding:15px;
-    text-align:center;
-    color:#000;
-    font-weight:bold;
+.table-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f172a;
 }
 
-td{
-    padding:15px;
-    text-align:center;
-    border-bottom:1px solid #eee;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
 }
 
-tbody tr:hover{
-    background:#f8f8f8;
-}
-/* ===========================
-   Footer
-=========================== */
-
-.footer{
-    margin-top:30px;
-    padding:15px;
-    text-align:center;
-    color:#777;
-    font-size:14px;
+th, td {
+    padding: 16px 24px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-/* Scrollbar */
-
-::-webkit-scrollbar{
-    width:8px;
-    height:8px;
+th {
+    background: #f8fafc;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-::-webkit-scrollbar-thumb{
-    background:#FFC107;
-    border-radius:10px;
+td {
+    font-size: 14px;
+    color: #334155;
 }
 
-::-webkit-scrollbar-track{
-    background:#f1f1f1;
+tr:last-child td {
+    border-bottom: none;
 }
 
-/* ===========================
-   Responsive
-=========================== */
+/* ==========================================================================
+   FOOTER BLOCK SYSTEM
+   ========================================================================== */
+.footer {
+    margin-top: auto;
+    padding: 20px 0 0 0;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+}
 
-@media (max-width:992px){
+.footer p {
+    font-size: 13px;
+    color: #94a3b8;
+}
 
-    .sidebar{
-        width:220px;
+/* ==========================================================================
+   RESPONSIVE OVERLAYS
+   ========================================================================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+        padding: 30px 10px;
     }
-
-    .main-content{
-        margin-left:220px;
-        width:calc(100% - 220px);
+    .sidebar h2, .sidebar span, .logo-section img {
+        display: none;
     }
-
-    .cards{
-        grid-template-columns:repeat(2,1fr);
+    .sidebar ul li {
+        justify-content: center;
+        padding: 12px;
     }
-
-}
-
-@media (max-width:768px){
-
-    body{
-        display:block;
+    .main-content {
+        margin-left: 70px;
+        padding: 20px;
     }
-
-    .sidebar{
-        position:relative;
-        width:100%;
-        height:auto;
+    .topbar h1 {
+        font-size: 22px;
     }
-
-    .sidebar ul li{
-        justify-content:center;
-    }
-
-    .main-content{
-        margin-left:0;
-        width:100%;
-        padding:15px;
-    }
-
-    .topbar{
-        flex-direction:column;
-        text-align:center;
-        gap:15px;
-    }
-
-    .cards{
-        grid-template-columns:1fr;
-    }
-
-    .table-box{
-        overflow-x:auto;
-    }
-
-    table{
-        min-width:650px;
-    }
-
-}
-
-@media (max-width:480px){
-
-    .logo-section img{
-        width:60px;
-    }
-
-    .logo-section h2{
-        font-size:20px;
-    }
-
-    .topbar h1{
-        font-size:22px;
-    }
-
-    .topbar p{
-        font-size:14px;
-    }
-
-    .card{
-        padding:20px;
-    }
-
-    .card h2{
-        font-size:28px;
-    }
-
-    .card h3{
-        font-size:16px;
-    }
-
 }
