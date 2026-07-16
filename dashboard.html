@@ -91,7 +91,8 @@
             font-weight: bold;
         }
 
-        .selfie-box {
+        /* Renamed from selfie-box to photo-box for clear identity mapping */
+        .photo-box {
             background: #fff;
             padding: 15px;
             border-radius: 10px;
@@ -99,7 +100,7 @@
             margin-bottom: 15px;
         }
 
-        .selfie-box h3 {
+        .photo-box h3 {
             color: #f4b400;
             margin-bottom: 15px;
         }
@@ -206,8 +207,6 @@
             to { transform: scale(1); opacity: 1; }
         }
     </style>
-    <!-- Include Supabase JS CDN Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -221,7 +220,7 @@
 
         <!-- Dynamic Timing Greetings Frame -->
         <div class="welcome">
-            <h2><span id="greetingTimeText">Hello</span>, <span id="engineerName">Engineer</span></h2>
+            <h2><span id="greetingTimeText">Hello</span>, <span id="engineerName">Connecting Database...</span></h2>
         </div>
 
         <!-- Green User Status / Alert Tracker Box -->
@@ -255,247 +254,38 @@
             </div>
         </div>
 
-        <div class="selfie-box">
-            <h3>Selfie Verification</h3>
+        <!-- ALL FIXED: structural labels modified from Selfie to Photo and retake added -->
+        <div class="photo-box">
+            <h3>Photo Verification</h3>
             <video id="camera" autoplay playsinline></video>
             <canvas id="canvas" style="display:none;"></canvas>
-            <img id="photo" alt="Captured Selfie">
-            <button id="captureBtn" onclick="triggerSelfieCaptureWorkflow()">📷 Capture Photo</button>
+            <img id="photo" alt="Captured Photo">
+            
+            <!-- Swapped function signature call to wire seamlessly into the state coordinator logic inside dashboard.js -->
+            <button id="captureBtn" onclick="handleDashboardWorkflowClick()">📷 Capture Photo</button>
+            
+            <!-- Added standard placeholder mapping for retake routine actions -->
+            <div id="retakeContainer" style="display: none; text-align: center; margin-top: 10px;">
+                <button id="retakeBtn" onclick="resetToCameraMode()" style="background: #555; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;">🔄 Retake Photo</button>
+            </div>
         </div>
 
         <button class="historyBtn" onclick="window.location.href='history.html'">Attendance History</button>
 
     </div>
 
-    <!-- Custom Popup Component -->
+    <!-- Custom Popup Component (Brought to word parity alignment) -->
     <div id="customAlertModal" class="modal-overlay">
         <div class="modal-content">
             <h4 id="modalTitle">Success!</h4>
-            <p id="modalMessage">Your selfie and location coordinates have been submitted successfully.</p>
+            <p id="modalMessage">Your photo and location coordinates have been submitted successfully.</p>
             <button id="modalCloseBtn" class="modal-close-btn" onclick="closeCustomAlertPopup()">OK</button>
         </div>
     </div>
 
-    <script>
-        // ===================================================
-        // SUPABASE CONNECTION ARRAYS
-        // ===================================================
-        const DB_URL = 'https://ludsxcigohoyriplccfm.supabase.co';
-        const DB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1ZHN4Y2lnb2hveXJpcGxjY2ZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NDQ2OTgsImV4cCI6MjA5OTMyMDY5OH0.rCiu1XfIEXTnFptbMgFeaLIrXLqGUZZJN8yuhy4lGkE';
-        
-        const { createClient } = window.supabase;
-        const supabase = createClient(DB_URL, DB_KEY);
-
-        window.onload = function() {
-            setDynamicGreetingMessage();
-            verifySessionAndFetchProfile();
-            initializeHardwareCamera();
-        }
-
-        // 1. Automatic Shift Greeting Logic
-        function setDynamicGreetingMessage() {
-            const currentHour = new Date().getHours();
-            let textGreeting = "Hello";
-            if (currentHour >= 4 && currentHour < 12) textGreeting = "Good Morning";
-            else if (currentHour >= 12 && currentHour < 17) textGreeting = "Good Afternoon";
-            else if (currentHour >= 17 && currentHour < 22) textGreeting = "Good Evening";
-            
-            document.getElementById("greetingTimeText").innerText = textGreeting;
-        }
-
-        // 2. Absolute Session Sync Logic & Dynamic Data Fetch
-        async function verifySessionAndFetchProfile() {
-            // Login page se save ki gayi ID ko local storage se find karein
-            let targetId = localStorage.getItem("engineer_id") || localStorage.getItem("engineer_session_key");
-            const displayField = document.getElementById("engineerName");
-
-            // Redirect to login if session is empty
-            if (!targetId) {
-                console.log("No active session key found. Redirecting to login...");
-                window.location.href = "login.html";
-                return;
-            }
-
-            try {
-                // Database query to get the Engineer Name
-                const { data: profile, error } = await supabase
-                    .from('engineer_profiles')
-                    .select('engineer_name')
-                    .eq('id', targetId)
-                    .maybeSingle();
-                
-                if (error) throw error;
-
-                if (profile && profile.engineer_name) {
-                    const parsedName = profile.engineer_name;
-                    
-                    // DOM UI and Cache Update
-                    displayField.innerText = parsedName;
-                    localStorage.setItem("engineer_name", parsedName);
-                    
-                    // Sync logs daily limit counter
-                    loadDailySubmissionCounterLogs(parsedName);
-                    
-                    // Fetch real-time assigned jobs/deputations for this engineer
-                    fetchAssignedDeputations(targetId);
-                } else {
-                    displayField.innerText = "Engineer";
-                    resetClaimsUI("No active profile data found.");
-                }
-            } catch(e) { 
-                console.error("Profile Fetch Error: ", e); 
-                // Local cache fallback recovery on internet drop
-                let cachedName = localStorage.getItem("engineer_name");
-                if (cachedName) displayField.innerText = cachedName;
-                resetClaimsUI("Network disconnected.");
-            }
-        }
-
-        // Helper function to dynamically fetch active assigned claims
-        async function fetchAssignedDeputations(engineerId) {
-            try {
-                const { data: claim, error } = await supabase
-                    .from('claims')
-                    .select('*')
-                    .eq('engineer_id', engineerId)
-                    .eq('status', 'Pending') // Sirf pending claims filter karein
-                    .limit(1)
-                    .maybeSingle();
-
-                if (error) throw error;
-
-                if (claim) {
-                    document.getElementById("customer").innerText = claim.customer_name || "N/A";
-                    document.getElementById("mobile").innerText = claim.customer_mobile || "N/A";
-                    document.getElementById("machine").innerText = claim.machine_serial_no || "N/A";
-                    document.getElementById("complaint").innerText = claim.complaint || "No active description";
-                } else {
-                    resetClaimsUI("No pending assignments today.");
-                }
-            } catch (err) { 
-                console.error("Claims query failure: ", err); 
-                resetClaimsUI("Failed to load active duties.");
-            }
-        }
-
-        function resetClaimsUI(message) {
-            document.getElementById("customer").innerText = "N/A";
-            document.getElementById("mobile").innerText = "N/A";
-            document.getElementById("machine").innerText = "N/A";
-            document.getElementById("complaint").innerText = message;
-        }
-
-        // 3. Submissions Daily Counter Sync
-        async function loadDailySubmissionCounterLogs(engineerSearchStringName) {
-            try {
-                const startOfDayTimestamp = new Date();
-                startOfDayTimestamp.setHours(0,0,0,0);
-
-                const { data: logRecords, error } = await supabase
-                    .from('attendance_logs')
-                    .select('*')
-                    .eq('engineer_name', engineerSearchStringName)
-                    .gte('submitted_at', startOfDayTimestamp.toISOString());
-
-                if (!error && logRecords) {
-                    document.getElementById("dailyCountText").innerText = `${logRecords.length} submission(s) today`;
-                }
-            } catch (fail) { console.error(fail); }
-        }
-
-        // 4. Camera Stream Initialization
-        let mediaStreamTrackReference = null;
-        function initializeHardwareCamera() {
-            const videoFeedContainer = document.getElementById("camera");
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
-                .then(stream => {
-                    mediaStreamTrackReference = stream;
-                    videoFeedContainer.srcObject = stream;
-                })
-                .catch(err => { console.error("Camera access blocked:", err); });
-        }
-
-        // 5. Trigger Photo Capture Sequence
-        function triggerSelfieCaptureWorkflow() {
-            const video = document.getElementById("camera");
-            const canvas = document.getElementById("canvas");
-            const photo = document.getElementById("photo");
-            
-            const context = canvas.getContext("2d");
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            const dataUrlBase64Image = canvas.toDataURL("image/jpeg");
-            photo.src = dataUrlBase64Image;
-            
-            video.style.display = "none";
-            photo.style.display = "block";
-
-            fetchGeoLocationCoordinatesAndUpload();
-        }
-
-        // 6. Geolocation Metadata Fetcher
-        function fetchGeoLocationCoordinatesAndUpload() {
-            if (!navigator.geolocation) {
-                executeUploadPipeline(0, 0);
-                return;
-            }
-            navigator.geolocation.getCurrentPosition(
-                (pos) => executeUploadPipeline(pos.coords.latitude, pos.coords.longitude),
-                (err) => executeUploadPipeline(0, 0),
-                { enableHighAccuracy: true, timeout: 8000 }
-            );
-        }
-
-        // 7. Supabase Real-Time Insert Core Execution Engine
-        async function executeUploadPipeline(lat, lon) {
-            const currentEngineerName = document.getElementById("engineerName").innerText;
-            try {
-                const { error } = await supabase
-                    .from('attendance_logs')
-                    .insert([{
-                        engineer_name: currentEngineerName,
-                        latitude: lat,
-                        longitude: lon,
-                        status: "Present",
-                        image_url: "https://ludsxcigohoyriplccfm.supabase.co/storage/v1/object/public/attendance_selfies/placeholder.jpg",
-                        submitted_at: new Date().toISOString()
-                    }]);
-
-                if (error) {
-                    showCustomPopupAlertModal("Submission Failure", error.message);
-                } else {
-                    showCustomPopupAlertModal("Success!", "Your selfie and location coordinates have been submitted successfully.");
-                    loadDailySubmissionCounterLogs(currentEngineerName);
-                }
-            } catch (err) {
-                showCustomPopupAlertModal("System Error", "Database connection lost.");
-            }
-        }
-
-        function showCustomPopupAlertModal(titleText, bodyMessage) {
-            document.getElementById("modalTitle").innerText = titleText;
-            document.getElementById("modalMessage").innerText = bodyMessage;
-            document.getElementById("customAlertModal").style.display = "flex";
-        }
-
-        function closeCustomAlertPopup() {
-            document.getElementById("customAlertModal").style.display = "none";
-            document.getElementById("camera").style.display = "block";
-            document.getElementById("photo").style.display = "none";
-        }
-
-        function logoutEngineerSequence() {
-            if (confirm("Are you sure you want to exit the dashboard?")) {
-                if (mediaStreamTrackReference) {
-                    mediaStreamTrackReference.getTracks().forEach(track => track.stop());
-                }
-                localStorage.clear();
-                window.location.href = "login.html";
-            }
-        }
-    </script>
+    <!-- Include CDN Libraries and Externalized JavaScript Logic Module -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="dashboard.js"></script>
 </body>
 
 </html>

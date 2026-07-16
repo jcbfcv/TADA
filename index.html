@@ -193,14 +193,14 @@ const supabaseClientInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const otpInputs = document.querySelectorAll(".otp-input");
 let verifiedEngineerData = null; 
 
-// Initial Session Check Validation Hook
-window.onload = function() {
-    let activeSessionToken = localStorage.getItem("engineer_id") || localStorage.getItem("engineer_session_key");
-    if (activeSessionToken) {
-        console.log("Active profile session matched. Routing to dashboard...");
-        window.location.href = "dashboard.html";
+// Auto-redirect disabled intentionally to let you open the login page directly
+
+// Mobile field enter key submission wrapper
+document.getElementById("mobile").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        checkMobile();
     }
-}
+});
 
 // Auto-focus Shifting for PIN digits
 otpInputs.forEach((input, index) => {
@@ -223,9 +223,9 @@ otpInputs.forEach((input, index) => {
 
 // Step 1: Check if Mobile Number exists in engineer_profiles
 async function checkMobile() {
-    let mobile = document.getElementById("mobile").value;
+    let mobile = document.getElementById("mobile").value.trim();
 
-    if (mobile.length !== 10) {
+    if (mobile.length !== 10 || isNaN(mobile)) {
         alert("Please enter a valid 10 digit mobile number.");
         return;
     }
@@ -261,6 +261,7 @@ async function checkMobile() {
     otpInputs[0].focus();
 }
 
+// Reset button styling state
 function resetPinButton() {
     document.getElementById("pinBtn").innerText = "Enter PIN";
     document.getElementById("pinBtn").disabled = false;
